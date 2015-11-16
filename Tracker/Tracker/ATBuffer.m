@@ -91,6 +91,8 @@ SOFTWARE.
     [self.persistentParameters addObject:[[ATParam alloc]init:@"cn" value:^NSString* () {return [ATTool convertConnectionTypeToString:[ATTechnicalContext connectionType]];} type:ATParamTypeString options:persistentOptionWithEncoding]];
     // Add time stamp for cache
     [self.persistentParameters addObject:[[ATParam alloc]init:@"ts" value:^NSString* () {return [NSString stringWithFormat:@"%f",[[NSDate alloc]init].timeIntervalSince1970];} type:ATParamTypeString options:persistentOption]];
+    // Add download source
+    [self.persistentParameters addObject:[[ATParam alloc]init:@"dls" value:^NSString* () {return [ATTechnicalContext downloadSource:self.tracker];} type:ATParamTypeString options:persistentOption]];
     // Add userId
     [self.persistentParameters addObject:[[ATParam alloc]init:@"idclient" value:^NSString* () {return [ATTechnicalContext userId:[self.tracker.configuration.parameters objectForKey:@"identifier"]];} type:ATParamTypeString options:persistentOption]];
     

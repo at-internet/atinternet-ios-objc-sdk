@@ -32,6 +32,7 @@ SOFTWARE.
 
 
 #import <Foundation/Foundation.h>
+#import "ATTracker.h"
 
 
 @interface ATTechnicalContext : NSObject
@@ -75,6 +76,13 @@ typedef NS_ENUM(int, ATConnectionType) {
  @return the unique user id
  */
 + (NSString *)userId:(NSString *)identifier;
+
+/**
+ Unique user id
+ @param identifier
+ @return the unique user id
+ */
++ (NSString *)downloadSource:(ATTracker *)tracker;
 
 /**
  SDK Version

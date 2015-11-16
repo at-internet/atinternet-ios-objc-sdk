@@ -40,9 +40,10 @@ SOFTWARE.
 #import "ATTechnicalContext.h"
 #import "ATReachability.h"
 #import "ATTool.h"
+#import "ATConfiguration.h"
 
 
-#define AT_SDK_VERSION @"2.0.8"
+#define AT_SDK_VERSION @"2.0.9"
 
 
 @implementation ATTechnicalContext
@@ -175,6 +176,15 @@ static NSInteger _level2 = 0;
     }
     
     return @"";
+}
+
++ (NSString *)downloadSource:(ATTracker *)tracker {
+    
+    if([tracker.configuration.parameters objectForKey:@"downloadSource"]){
+        return [tracker.configuration.parameters objectForKey:@"downloadSource"];
+    } else {
+        return @"ext";
+    }
 }
 
 + (ATConnectionType)connectionType {

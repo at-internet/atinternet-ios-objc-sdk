@@ -36,11 +36,12 @@ SOFTWARE.
 #import "ATTracker.h"
 #import "ATPluginProtocol.h"
 #import "ATTVTracking.h"
+#import "ATConfiguration.h"
 
 #define TVT_PARAM                   @"ATTVTParam"
 #define TVT_LAST_SESSION_START      @"ATTVTLastSessionStart"
 #define TVT_REMANENT_SPOT           @"ATTVTRemanentSpot"
-#define TVT_VERSION                 @"1.2.1m"
+#define TVT_VERSION                 @"1.2.2m"
 
 
 @interface ATTVTrackingPlugin() <ATPluginProtocol>
@@ -49,6 +50,7 @@ typedef NS_ENUM(NSInteger, ATTVTrackingPluginStatusCase) {
     ATTVTrackingPluginStatusCaseChannelUndefined,
     ATTVTrackingPluginStatusCaseChannelError,
     ATTVTrackingPluginStatusCaseNoData,
+    ATTVTrackingPluginStatusCaseTimeError,
     ATTVTrackingPluginStatusCaseOk
 };
 
@@ -57,6 +59,7 @@ typedef NS_ENUM(NSInteger, ATTVTrackingPluginStatusCase) {
 @property (nonatomic) BOOL isValidSpot;
 @property (nonatomic) BOOL isSpotFirstTimeSaved;
 @property (nonatomic) BOOL isVisitOver;
+@property (nonatomic) NSString *timeData;
 @property (nonatomic) ATTVTrackingPluginStatusCase statusCase;
 
 @end
@@ -95,10 +98,34 @@ typedef NS_ENUM(NSInteger, ATTVTrackingPluginStatusCase) {
 
 - (BOOL)isValidSpot {
     NSString *value = (NSString *)[self.spot objectForKey:@"channel"];
+    self.timeData = @"";
     
     if (value) {
         if (![value isEqualToString:@"undefined"]) {
-            return YES;
+            if (self.spot[@"time"]) {
+                self.timeData = self.spot[@"time"];
+                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+                dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"UTC"];
+                
+                NSDate *date = [dateFormatter dateFromString:self.spot[@"time"]];
+                if(date){
+                    NSString *tvtSpotValidityTime = self.tracker.configuration.parameters[@"tvtSpotValidityTime"];
+                    
+                    if([ATTool minutesBetweenDates:date toDate:[[NSDate alloc] init]] > [tvtSpotValidityTime intValue]){
+                        self.statusCase = ATTVTrackingPluginStatusCaseTimeError;
+                        return NO;
+                    } else {
+                        return YES;
+                    }
+                } else {
+                    self.statusCase = ATTVTrackingPluginStatusCaseTimeError;
+                    return NO;
+                }
+            } else {
+                self.statusCase = ATTVTrackingPluginStatusCaseTimeError;
+                return NO;
+            }
         } else {
             self.statusCase = ATTVTrackingPluginStatusCaseChannelUndefined;
             return NO;
@@ -271,6 +298,11 @@ typedef NS_ENUM(NSInteger, ATTVTrackingPluginStatusCase) {
         
     }
     
+    if(![tvtParam objectForKey:@"tvtracking"]){
+        NSMutableDictionary *dico = [[NSMutableDictionary alloc] init];
+        [tvtParam setObject:dico forKey:@"tvtracking"];
+    }
+    
     [[tvtParam objectForKey:@"tvtracking"] setObject:[self buildTVTInfo:urlResponse] forKey:@"info"];
     
     if (spotSet
@@ -314,6 +346,10 @@ typedef NS_ENUM(NSInteger, ATTVTrackingPluginStatusCase) {
         case ATTVTrackingPluginStatusCaseNoData:
             [[dic objectForKey:@"info"] setObject:code forKey:@"message"];
             [[dic objectForKey:@"info"] setObject:@"noData" forKey:@"errors"];
+            break;
+        case ATTVTrackingPluginStatusCaseTimeError:
+            [[dic objectForKey:@"info"] setObject: [NSString stringWithFormat:@"%@-%@", code, self.timeData] forKey:@"message"];
+            [[dic objectForKey:@"info"] setObject:@"timeError" forKey:@"errors"];
             break;
         default:
             [[dic objectForKey:@"info"] setObject:code forKey:@"message"];

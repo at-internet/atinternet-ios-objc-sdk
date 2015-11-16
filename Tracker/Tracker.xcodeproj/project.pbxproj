@@ -13,9 +13,6 @@
 		4F0482E61A8BA47B00A51B90 /* ATTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4F0482E41A8BA47B00A51B90 /* ATTracker.xcdatamodeld */; };
 		4F0482E71A8BA47B00A51B90 /* ATTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4F0482E41A8BA47B00A51B90 /* ATTracker.xcdatamodeld */; };
 		4F3015F91A9DDEB0002BCC2C /* ATDefaultConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3015ED1A9DD9B7002BCC2C /* ATDefaultConfiguration.plist */; };
-		4F3015FA1A9DDEB0002BCC2C /* ATDefaultConfiguration~ipad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3015EE1A9DD9B7002BCC2C /* ATDefaultConfiguration~ipad.plist */; };
-		4F3015FB1A9DDEB0002BCC2C /* ATDefaultConfiguration~iphone.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3015EF1A9DD9B7002BCC2C /* ATDefaultConfiguration~iphone.plist */; };
-		4F3015FC1A9DDEB0002BCC2C /* ATDefaultConfiguration~ipod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3015F01A9DD9B7002BCC2C /* ATDefaultConfiguration~ipod.plist */; };
 		4F3D7FD31AB6D191004C809E /* ATDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F3D7FD11AB6D191004C809E /* ATDebugger.h */; };
 		4F3D7FD41AB6D191004C809E /* ATDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3D7FD21AB6D191004C809E /* ATDebugger.m */; };
 		4F3D7FD81AB6D299004C809E /* ATDebuggerWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F3D7FD61AB6D299004C809E /* ATDebuggerWindow.h */; };
@@ -276,9 +273,6 @@
 		4F0482E11A8BA34500A51B90 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		4F0482E51A8BA47B00A51B90 /* ATTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ATTracker.xcdatamodel; sourceTree = "<group>"; };
 		4F3015ED1A9DD9B7002BCC2C /* ATDefaultConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ATDefaultConfiguration.plist; sourceTree = "<group>"; };
-		4F3015EE1A9DD9B7002BCC2C /* ATDefaultConfiguration~ipad.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ATDefaultConfiguration~ipad.plist"; sourceTree = "<group>"; };
-		4F3015EF1A9DD9B7002BCC2C /* ATDefaultConfiguration~iphone.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ATDefaultConfiguration~iphone.plist"; sourceTree = "<group>"; };
-		4F3015F01A9DD9B7002BCC2C /* ATDefaultConfiguration~ipod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ATDefaultConfiguration~ipod.plist"; sourceTree = "<group>"; };
 		4F3D7FD11AB6D191004C809E /* ATDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ATDebugger.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4F3D7FD21AB6D191004C809E /* ATDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ATDebugger.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4F3D7FD61AB6D299004C809E /* ATDebuggerWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATDebuggerWindow.h; sourceTree = "<group>"; };
@@ -510,9 +504,6 @@
 				CC340E041A8B52AB00D96276 /* ATReachability.h */,
 				CC340E051A8B52AB00D96276 /* ATReachability.m */,
 				4F3015ED1A9DD9B7002BCC2C /* ATDefaultConfiguration.plist */,
-				4F3015EE1A9DD9B7002BCC2C /* ATDefaultConfiguration~ipad.plist */,
-				4F3015EF1A9DD9B7002BCC2C /* ATDefaultConfiguration~iphone.plist */,
-				4F3015F01A9DD9B7002BCC2C /* ATDefaultConfiguration~ipod.plist */,
 				4F0482E41A8BA47B00A51B90 /* ATTracker.xcdatamodeld */,
 				AEBF1BD51AA5E5EC0008609A /* core.manifest.json */,
 				AEE288E51B0F26DE009482C4 /* nuggad.manifest.json */,
@@ -895,7 +886,6 @@
 				AEF293101A4343AB00B0034E /* Frameworks */,
 				AE367CCE1A8DFB5200D490AD /* Headers */,
 				AEBF1BD81AA5E66A0008609A /* ShellScript */,
-				AEBF1BE81AA5EFC20008609A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -933,7 +923,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "AT Internet";
 				TargetAttributes = {
 					4F53DF5F1A8E140A009C6B44 = {
@@ -982,7 +972,6 @@
 				AE2BFB5E1B6133C400379574 /* error48.png in Resources */,
 				AE2BFB691B6133C400379574 /* tv48.png in Resources */,
 				AE2BFB6A1B6133C400379574 /* video48.png in Resources */,
-				4F3015FA1A9DDEB0002BCC2C /* ATDefaultConfiguration~ipad.plist in Resources */,
 				AE2BFB5A1B6133C400379574 /* atinternet-logo.png in Resources */,
 				AE2BFB611B6133C400379574 /* refresh64.png in Resources */,
 				AE2BFB651B6133C400379574 /* target32.png in Resources */,
@@ -994,8 +983,6 @@
 				AE2BFB621B6133C400379574 /* save48.png in Resources */,
 				AE2BFB6B1B6133C400379574 /* warning48.png in Resources */,
 				AE2BFB641B6133C400379574 /* smartphone48.png in Resources */,
-				4F3015FB1A9DDEB0002BCC2C /* ATDefaultConfiguration~iphone.plist in Resources */,
-				4F3015FC1A9DDEB0002BCC2C /* ATDefaultConfiguration~ipod.plist in Resources */,
 				AE2BFB681B6133C400379574 /* trash64.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1023,19 +1010,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "##########################################\n#\n# c.f. http://stackoverflow.com/questions/3520977/build-fat-static-library-device-simulator-using-xcode-and-sdk-4\n#\n# Version 2.7\n#\n# Latest Change:\n# - Supports iPhone 5 / iPod Touch 5 (uses Apple's workaround to lipo bug)\n#\n# Purpose:\n#   Automatically create a Universal static library for iPhone + iPad + iPhone Simulator from within XCode\n#\n# Author: Adam Martin - http://twitter.com/t_machine_org\n# Based on: original script from Eonil (main changes: Eonil's script WILL NOT WORK in Xcode GUI - it WILL CRASH YOUR COMPUTER)\n#\n\nset -e\nset -o pipefail\n\n#################[ Tests: helps workaround any future bugs in Xcode ]########\n#\nDEBUG_THIS_SCRIPT=\"false\"\n\nif [ $DEBUG_THIS_SCRIPT = \"true\" ]\nthen\necho \"########### TESTS #############\"\necho \"Use the following variables when debugging this script; note that they may change on recursions\"\necho \"BUILD_DIR = $BUILD_DIR\"\necho \"BUILD_ROOT = $BUILD_ROOT\"\necho \"CONFIGURATION_BUILD_DIR = $CONFIGURATION_BUILD_DIR\"\necho \"BUILT_PRODUCTS_DIR = $BUILT_PRODUCTS_DIR\"\necho \"CONFIGURATION_TEMP_DIR = $CONFIGURATION_TEMP_DIR\"\necho \"TARGET_BUILD_DIR = $TARGET_BUILD_DIR\"\nfi\n\n#####################[ part 1 ]##################\n# First, work out the BASESDK version number (NB: Apple ought to report this, but they hide it)\n#    (incidental: searching for substrings in sh is a nightmare! Sob)\n\nSDK_VERSION=$(echo ${SDK_NAME} | grep -o '.\\{3\\}$')\n\n# Next, work out if we're in SIM or DEVICE\n\nif [ ${PLATFORM_NAME} = \"iphonesimulator\" ]\nthen\nOTHER_SDK_TO_BUILD=iphoneos${SDK_VERSION}\nelse\nOTHER_SDK_TO_BUILD=iphonesimulator${SDK_VERSION}\nfi\n\necho \"XCode has selected SDK: ${PLATFORM_NAME} with version: ${SDK_VERSION} (although back-targetting: ${IPHONEOS_DEPLOYMENT_TARGET})\"\necho \"...therefore, OTHER_SDK_TO_BUILD = ${OTHER_SDK_TO_BUILD}\"\n#\n#####################[ end of part 1 ]##################\n\n#####################[ part 2 ]##################\n#\n# IF this is the original invocation, invoke WHATEVER other builds are required\n#\n# Xcode is already building ONE target...\n#\n# ...but this is a LIBRARY, so Apple is wrong to set it to build just one.\n# ...we need to build ALL targets\n# ...we MUST NOT re-build the target that is ALREADY being built: Xcode WILL CRASH YOUR COMPUTER if you try this (infinite recursion!)\n#\n#\n# So: build ONLY the missing platforms/configurations.\n\nif [ \"true\" == ${ALREADYINVOKED:-false} ]\nthen\necho \"RECURSION: I am NOT the root invocation, so I'm NOT going to recurse\"\nelse\n# CRITICAL:\n# Prevent infinite recursion (Xcode sucks)\nexport ALREADYINVOKED=\"true\"\n\necho \"RECURSION: I am the root ... recursing all missing build targets NOW...\"\necho \"RECURSION: ...about to invoke: xcodebuild -configuration \\\"${CONFIGURATION}\\\" -project \\\"${PROJECT_NAME}.xcodeproj\\\" -target \\\"${TARGET_NAME}\\\" -sdk \\\"${OTHER_SDK_TO_BUILD}\\\" ${ACTION} RUN_CLANG_STATIC_ANALYZER=NO\" BUILD_DIR=\\\"${BUILD_DIR}\\\" BUILD_ROOT=\\\"${BUILD_ROOT}\\\" SYMROOT=\\\"${SYMROOT}\\\"\n\nxcodebuild -configuration \"${CONFIGURATION}\" -project \"${PROJECT_NAME}.xcodeproj\" -target \"${TARGET_NAME}\" -sdk \"${OTHER_SDK_TO_BUILD}\" ${ACTION} RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\"\n\nACTION=\"build\"\n\n#Merge all platform binaries as a fat binary for each configurations.\n\n# Calculate where the (multiple) built files are coming from:\nCURRENTCONFIG_DEVICE_DIR=${SYMROOT}/${CONFIGURATION}-iphoneos\nCURRENTCONFIG_SIMULATOR_DIR=${SYMROOT}/${CONFIGURATION}-iphonesimulator\n\necho \"Taking device build from: ${CURRENTCONFIG_DEVICE_DIR}\"\necho \"Taking simulator build from: ${CURRENTCONFIG_SIMULATOR_DIR}\"\n\nCREATING_UNIVERSAL_DIR=${SYMROOT}/${CONFIGURATION}-universal\necho \"...I will output a universal build to: ${CREATING_UNIVERSAL_DIR}\"\n\n# ... remove the products of previous runs of this script\n#      NB: this directory is ONLY created by this script - it should be safe to delete!\n\n#rm -rf \"${CREATING_UNIVERSAL_DIR}\"\nmkdir -p \"${CREATING_UNIVERSAL_DIR}\"\n\n#\necho \"lipo: for current configuration (${CONFIGURATION}) creating output file: ${CREATING_UNIVERSAL_DIR}/${EXECUTABLE_NAME}\"\nxcrun -sdk iphoneos lipo -create -output \"${CREATING_UNIVERSAL_DIR}/${EXECUTABLE_NAME}\" \"${CURRENTCONFIG_DEVICE_DIR}/${EXECUTABLE_NAME}\" \"${CURRENTCONFIG_SIMULATOR_DIR}/${EXECUTABLE_NAME}\"\n\n#########\n#\n# Added: StackOverflow suggestion to also copy \"include\" files\n#    (untested, but should work OK)\n#\necho \"Fetching headers from ${PUBLIC_HEADERS_FOLDER_PATH}\"\necho \"  (if you embed your library project in another project, you will need to add\"\necho \"   a \"User Search Headers\" build setting of: (NB INCLUDE THE DOUBLE QUOTES BELOW!)\"\necho '        \"$(TARGET_BUILD_DIR)/usr/local/include/\"'\nif [ -d \"${CURRENTCONFIG_DEVICE_DIR}${PUBLIC_HEADERS_FOLDER_PATH}\" ]\nthen\nmkdir -p \"${CREATING_UNIVERSAL_DIR}${PUBLIC_HEADERS_FOLDER_PATH}\"\n# * needs to be outside the double quotes?\ncp -r \"${CURRENTCONFIG_DEVICE_DIR}${PUBLIC_HEADERS_FOLDER_PATH}\"* \"${CREATING_UNIVERSAL_DIR}${PUBLIC_HEADERS_FOLDER_PATH}\"\nfi\nfi";
-		};
-		AEBF1BE81AA5EFC20008609A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -d \"/Users/Shared/XcodeBot/\" ]\nthen\n\n    plist=${INFOPLIST_FILE}\n    version=`/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$plist\"`\n    branch=$(git rev-parse --abbrev-ref HEAD)\n\n    cd /Users/Shared/XcodeBot/\n\n    if [ \"$branch\" == \"develop\" ]\n    then\n        echo $version > version_v2_objc_alpha\n    elif [ \"$branch\" == \"release\" ]\n    then\n        echo $version > version_v2_objc_beta\n    elif [ \"$branch\" == \"master\" ]\n    then\n        echo $version > version_v2_objc_production\n    fi\n\nfi\n";
 		};
 		AEDFEE9B1B25C0FD00756827 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1243,6 +1217,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1250,7 +1225,7 @@
 				INFOPLIST_FILE = ATAssets/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-fembed-bitcode",
 					"-Qunused-arguments",
@@ -1270,6 +1245,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = ATAssets/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1291,7 +1267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = NO;
+				DEFINES_MODULE = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Tracker/ATTracker-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1315,8 +1291,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Tracker/ATTracker-prefix.pch";
 				INFOPLIST_FILE = "Tracker/Tracker-Info.plist";
@@ -1350,6 +1326,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1369,6 +1346,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-Qunused-arguments",
+					"-fembed-bitcode",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1392,6 +1373,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1403,6 +1385,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = (
+					"-Qunused-arguments",
+					"-fembed-bitcode",
+				);
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1413,7 +1399,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = NO;
+				DEFINES_MODULE = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Tracker/ATTracker-prefix.pch";
 				INFOPLIST_FILE = "Tracker/Tracker-Info.plist";
@@ -1432,8 +1418,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Tracker/ATTracker-prefix.pch";
 				INFOPLIST_FILE = "Tracker/Tracker-Info.plist";
@@ -1451,6 +1437,7 @@
 		AEF2932B1A4343AB00B0034E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -1460,6 +1447,7 @@
 				);
 				INFOPLIST_FILE = TrackerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1469,17 +1457,21 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.atinternet.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/TrackerTests/TrackerTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		AEF2932C1A4343AB00B0034E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = TrackerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1489,6 +1481,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.atinternet.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/TrackerTests/TrackerTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

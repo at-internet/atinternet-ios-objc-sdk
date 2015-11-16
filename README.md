@@ -2,9 +2,6 @@
 The AT Internet tag allows you to follow your users activity throughout your application’s lifecycle.
 To help you, the tag makes available classes (helpers) enabling the quick implementation of tracking for different application events (screen loads, gestures, video plays…)
 
-### Version
-2.0.8
-
 ### Content
 * Tag iPhone / iPad
 * Watch Extension supported
@@ -26,7 +23,7 @@ CocoaPods is a dependency manager which automates and simplifies the process of 
 
 ```ruby
 target 'MyProject' do
-pod "ATInternet-iOS-ObjC-SDK/iOS", "~>2.0.8"
+pod "ATInternet-iOS-ObjC-SDK/iOS", ">=2.0"
 end
 ```
 
@@ -34,11 +31,11 @@ end
 
 ```ruby
 target 'MyProject' do
-pod "ATInternet-iOS-ObjC-SDK/iOS","~>2.0.8"
+pod "ATInternet-iOS-ObjC-SDK/iOS",">=2.0"
 end
 
 target 'MyProject WatchKit 1 Extension' do
-pod "ATInternet-iOS-ObjC-SDK/WatchExtension", "~>2.0.8"
+pod "ATInternet-iOS-ObjC-SDK/WatchExtension", ">=2.0"
 end
 
 target 'MyProject WatchKit 1 App' do

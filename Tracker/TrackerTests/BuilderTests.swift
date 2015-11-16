@@ -104,7 +104,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -136,7 +136,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -167,7 +167,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -202,7 +202,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -213,10 +213,12 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
                 break
             }
             
-            if(pairComponents[1] == "falseBool"){
-                XCTAssert(pairComponents[1] == "false".percentEncodedString, "le paramètre falseBool doit être égal à false")
-                
-                break
+            if pairComponents.count > 1 {
+                if(pairComponents[1] == "falseBool"){
+                    XCTAssert(pairComponents[1] == "false".percentEncodedString, "le paramètre falseBool doit être égal à false")
+                    
+                    break
+                }
             }
         }
     }
@@ -244,7 +246,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -275,7 +277,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -310,7 +312,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -471,11 +473,11 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         let strings = builder.prepareQuery() as NSArray
         
-        XCTAssert(strings[13].str == "&p=home", "le premier paramètre doit être égal à &p=home")
+        XCTAssert(strings[14].str == "&p=home", "le premier paramètre doit être égal à &p=home")
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
-        XCTAssert(strings[15].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
-        XCTAssert(strings[16].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
-        XCTAssert(strings[17].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
+        XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
+        XCTAssert(strings[17].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
     }
     
     // Teste le formattage de paramètres permanents
@@ -510,11 +512,11 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         var strings = builder.prepareQuery()
         
-        XCTAssert(strings[13].str == "&p=home", "le premier paramètre doit être égal à &p=home")
+        XCTAssert(strings[14].str == "&p=home", "le premier paramètre doit être égal à &p=home")
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
-        XCTAssert(strings[15].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
-        XCTAssert(strings[16].str == "&crash=true", "le paramètre crash doit être égal à &crash=true")
-        XCTAssert(strings[17].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www%2Eatinternet%2Ecom et doit être le dernier paramètre")
+        XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
+        XCTAssert(strings[17].str == "&crash=true", "le paramètre crash doit être égal à &crash=true")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www%2Eatinternet%2Ecom et doit être le dernier paramètre")
     }
     
     // Teste le formattage de paramètres volatiles et persistents
@@ -548,11 +550,11 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         var strings = builder.prepareQuery()
         
-        XCTAssert(strings[13].str == "&p=home", "le premier paramètre doit être égal à &p=home")
+        XCTAssert(strings[14].str == "&p=home", "le premier paramètre doit être égal à &p=home")
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
-        XCTAssert(strings[15].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
-        XCTAssert(strings[16].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
-        XCTAssert(strings[17].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
+        XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
+        XCTAssert(strings[17].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
     }
     
     func testOrganizeParameters() {
@@ -605,8 +607,8 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         XCTAssert(params[2].key == "crash", "Le troisième paramètre doit etre crash=")
         XCTAssert(params[3].key == "dslu", "Le quatrième paramètre doit etre dslu=")
         XCTAssert(params[4].key == "array", "Le cinquième paramètre doit etre array=")
-        XCTAssert(params[18].key == "hl", "Le sixième paramètre doit etre hl=")
-        XCTAssert(params[19].key == "ref", "Le septième paramètre doit etre ref=")
+        XCTAssert(params[19].key == "hl", "Le sixième paramètre doit etre hl=")
+        XCTAssert(params[20].key == "ref", "Le septième paramètre doit etre ref=")
     }
     
     /* Tests de la gestion du multihits */

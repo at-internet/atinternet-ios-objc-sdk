@@ -205,6 +205,17 @@ SOFTWARE.
     return 0;
 }
 
++ (NSInteger)minutesBetweenDates:(NSDate *)fromDate toDate:(NSDate *)toDate {
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    int unitFlags = NSCalendarUnitMinute;
+    NSDateComponents *dateComponents = [calendar components:unitFlags fromDate:fromDate toDate:toDate options:0];
+    
+    if(dateComponents){
+        return dateComponents.minute;
+    }
+    return 0;
+}
+
 + (BOOL)isTesting {
     NSDictionary *environment = [[NSProcessInfo processInfo] environment];
     return [environment objectForKey:@"TEST"] != nil;

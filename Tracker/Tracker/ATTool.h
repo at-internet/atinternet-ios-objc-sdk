@@ -71,6 +71,15 @@ SOFTWARE.
 + (NSInteger)daysBetweenDates:(NSDate *)fromDate toDate:(NSDate *)toDate;
 
 /**
+ Gets the number of minutes between two dates
+ 
+ @param fromDate
+ @param toDate
+ @return the number of minutes between fromDate and toDate
+ */
++ (NSInteger)minutesBetweenDates:(NSDate *)fromDate toDate:(NSDate *)toDate;
+
+/**
  Gets environment
  
  @return YES if testing, NO if not testing

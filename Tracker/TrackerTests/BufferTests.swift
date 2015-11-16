@@ -59,7 +59,7 @@ class BufferTests: XCTestCase {
     // On vérifie qu'il est possible d'ajouter un paramètre persistant dans le buffer
     func testAddParamPer() {
         buffer.persistentParameters.addObject(paramPer)
-        XCTAssertEqual(buffer.persistentParameters.count, 14, "persistentParameters doit contenir un élément")
+        XCTAssertEqual(buffer.persistentParameters.count, 15, "persistentParameters doit contenir un élément")
     }
     
     // On vérifie qu'il est possible d'ajouter un paramètre volatile dans le buffer
@@ -71,7 +71,7 @@ class BufferTests: XCTestCase {
     // On vérifie qu'il est possible de récupérer un paramètre persistant depuis le buffer
     func testGetParamPer() {
         buffer.persistentParameters.addObject(paramPer)
-        let param = buffer.persistentParameters[13] as! ATParam
+        let param = buffer.persistentParameters[14] as! ATParam
         var testOK = true
         if (param.key != paramPer.key || param.value() != paramPer.value()) {
             testOK = false

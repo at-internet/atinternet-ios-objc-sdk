@@ -81,7 +81,7 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
     // Instance du tracker
     let tracker = ATTracker()
     
-    let nbPersistentParameters = 14
+    let nbPersistentParameters = 15
     
     // Variables références
     var callbackCalled = false
@@ -379,7 +379,7 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -399,7 +399,7 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.query!.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -425,7 +425,7 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
             let url = NSURL(string: hits[0] as! String)
             
             _ = [String: String]()
-            let urlComponents = url?.query!.componentsSeparatedByString("&")
+            let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
             
             for component in urlComponents! as [String] {
                 let pairComponents = component.componentsSeparatedByString("=")
@@ -457,7 +457,7 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
             let url = NSURL(string: hits[0] as! String)
             
             _ = [String: String]()
-            let urlComponents = url?.query!.componentsSeparatedByString("&")
+            let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
             
             for component in urlComponents! as [String] {
                 let pairComponents = component.componentsSeparatedByString("=")

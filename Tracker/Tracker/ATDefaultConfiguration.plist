@@ -10,6 +10,8 @@
 	<string></string>
 	<key>tvtVisitDuration</key>
 	<string>10</string>
+	<key>tvtSpotValidityTime</key>
+	<string>5</string>
 	<key>persistIdentifiedVisitor</key>
 	<string>true</string>
 	<key>hashUserId</key>
@@ -34,5 +36,7 @@
 	<string>false</string>
 	<key>identifier</key>
 	<string>uuid</string>
+	<key>downloadSource</key>
+	<string>ext</string>
 </dict>
 </plist>

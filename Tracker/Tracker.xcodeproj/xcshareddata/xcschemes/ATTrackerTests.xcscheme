@@ -7,44 +7,16 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "NO"
+            buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
+            buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AEF293121A4343AB00B0034E"
-               BuildableName = "libATTracker.a"
-               BlueprintName = "ATTracker"
-               ReferencedContainer = "container:Tracker.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AEDFEE501B2599EA00756827"
-               BuildableName = "libATExtensionTracker.a"
-               BlueprintName = "ATExtensionTracker"
-               ReferencedContainer = "container:Tracker.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4F53DF5F1A8E140A009C6B44"
-               BuildableName = "ATAssets.bundle"
-               BlueprintName = "ATAssets"
+               BlueprintIdentifier = "AEF2931D1A4343AB00B0034E"
+               BuildableName = "ATTrackerTests.xctest"
+               BlueprintName = "ATTrackerTests"
                ReferencedContainer = "container:Tracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,8 +26,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "NO">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AEF2931D1A4343AB00B0034E"
+               BuildableName = "ATTrackerTests.xctest"
+               BlueprintName = "ATTrackerTests"
+               ReferencedContainer = "container:Tracker.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
@@ -73,12 +55,19 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AEF293121A4343AB00B0034E"
-            BuildableName = "libATTracker.a"
-            BlueprintName = "ATTracker"
+            BlueprintIdentifier = "AEF2931D1A4343AB00B0034E"
+            BuildableName = "ATTrackerTests.xctest"
+            BlueprintName = "ATTrackerTests"
             ReferencedContainer = "container:Tracker.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "TEST"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -91,9 +80,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AEF293121A4343AB00B0034E"
-            BuildableName = "libATTracker.a"
-            BlueprintName = "ATTracker"
+            BlueprintIdentifier = "AEF2931D1A4343AB00B0034E"
+            BuildableName = "ATTrackerTests.xctest"
+            BlueprintName = "ATTrackerTests"
             ReferencedContainer = "container:Tracker.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -103,7 +92,6 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "ATTracker"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
