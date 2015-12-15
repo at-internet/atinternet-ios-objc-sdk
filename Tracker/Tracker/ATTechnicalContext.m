@@ -43,7 +43,7 @@ SOFTWARE.
 #import "ATConfiguration.h"
 
 
-#define AT_SDK_VERSION @"2.0.9"
+#define AT_SDK_VERSION @"2.0.10"
 
 
 @implementation ATTechnicalContext
