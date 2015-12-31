@@ -42,7 +42,7 @@ SOFTWARE.
 #import "ATTrackerQueue.h"
 #import "ATDebugger.h"
 
-#ifndef AT_EXTENSION
+#if !defined(AT_EXTENSION) && !TARGET_OS_WATCH
 #import "ATBackgroundTask.h"
 #endif
 
@@ -395,7 +395,7 @@ static BOOL sentWithSuccess = NO;
                 // Check if offline hits exists in database
                 if ([storage count] > 0) {
                     
-#ifndef AT_EXTENSION
+#if !defined(AT_EXTENSION) && !TARGET_OS_WATCH
                     // Creates background task for offline hits
                     if ([[UIDevice currentDevice] isMultitaskingSupported]
                         && [[[tracker.configuration.parameters objectForKey:@"enableBackgroundTask"] lowercaseString] isEqualToString:@"true"]) {

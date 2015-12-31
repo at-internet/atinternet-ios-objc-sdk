@@ -31,7 +31,9 @@ SOFTWARE.
 //
 
 #import "ATDebugger.h"
+#if !TARGET_OS_WATCH
 #import "ATDebuggerWindow.h"
+#endif
 #import "ATDebuggerEvent.h"
 #import "ATHit.h"
 #import "NSString+Tool.h"
@@ -39,6 +41,7 @@ SOFTWARE.
 #import "ATTracker.h"
 #import "ATStorage.h"
 
+#if !TARGET_OS_WATCH
 
 @interface ATDebugger()
 
@@ -80,8 +83,11 @@ SOFTWARE.
 - (void)offlineHitRowSelected:(UIPanGestureRecognizer *)recogniser;
 
 @end
+#endif
 
 @implementation ATDebugger
+
+#if !TARGET_OS_WATCH
 
 @synthesize viewController = _viewController;
 
@@ -109,6 +115,7 @@ SOFTWARE.
         _viewController = viewController;
     }
 }
+#endif
 
 + (id)sharedInstance {
     static ATDebugger *sharedDebugger = nil;
@@ -119,6 +126,7 @@ SOFTWARE.
     return sharedDebugger;
 }
 
+#if !TARGET_OS_WATCH
 - (instancetype)init {
     if (self = [super init]) {
         self.hourFormatter = [[NSDateFormatter alloc] init];
@@ -1671,5 +1679,13 @@ SOFTWARE.
     [((ATDebuggerWindow *)self.windows[sender.tag]).window removeFromSuperview];
     [self.windows removeObjectAtIndex:sender.tag];
 }
+
+#else
+
+- (void)addEvent:(NSString *)message icon:(NSString *)icon {
+    // Do nothing
+}
+
+#endif
 
 @end
