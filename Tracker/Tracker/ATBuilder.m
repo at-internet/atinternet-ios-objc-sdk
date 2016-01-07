@@ -586,6 +586,7 @@ SOFTWARE.
         if(parameter.options) {
             if(parameter.options.encode) {
                 value = [value percentEncodedString];
+                parameter.options.separator = [parameter.options.separator percentEncodedString];
             }
         }
         

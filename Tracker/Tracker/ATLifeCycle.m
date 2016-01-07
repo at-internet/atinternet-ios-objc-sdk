@@ -39,14 +39,16 @@ SOFTWARE.
 
 
 static BOOL _initialized = NO;
+static BOOL _firstLaunch = YES;
+static BOOL _appVersionChanged = NO;
+static NSString* _sessionId = nil;
+static NSDate* _timeInBackground = nil;
 
 
 @interface ATLifeCycle()
 
 // List of lifecycle metrics
 @property (nonatomic, strong) NSMutableDictionary *parameters;
-// Indicates whether the app version has changed
-@property (nonatomic) BOOL appVersionChanged;
 // Number of days since last app use
 @property (nonatomic) NSInteger daysSinceLastUse;
 // Calendar type
@@ -60,8 +62,51 @@ static BOOL _initialized = NO;
     return _initialized;
 }
 
++ (BOOL)isFirstLaunch {
+    return _firstLaunch;
+}
+
 + (void)setInitialized:(BOOL)initialized {
     _initialized = initialized;
+}
+
++ (void)applicationDidBecomeActive:(NSDictionary*)parameters {
+    int sessionConfig = [[parameters objectForKey:@"sessionBackgroundDuration"] intValue];
+    
+    if(sessionConfig > 0){
+        if(![self assignNewSession]){
+            if(_timeInBackground){
+                if([ATTool secondsBetweenDates:_timeInBackground toDate:[[NSDate alloc] init]] > sessionConfig){
+                    _sessionId = [[NSUUID UUID] UUIDString];
+                }
+                _timeInBackground = nil;
+            }
+        }
+    }
+    
+}
+
++ (void)applicationDidEnterBackground {
+    _timeInBackground = [[NSDate alloc] init];
+    [self updateFirstLaunch];
+}
+
++ (void)updateFirstLaunch {
+    _firstLaunch = NO;
+    _appVersionChanged = NO;
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:0 forKey:FIRST_LAUNCH];
+    [userDefaults synchronize];
+}
+
++ (BOOL)assignNewSession {
+    if(_sessionId){
+        return false;
+    } else {
+        _sessionId = [[NSUUID UUID] UUIDString];
+        return true;
+    }
 }
 
 - (instancetype)init {
@@ -94,7 +139,7 @@ static BOOL _initialized = NO;
     // Not first launch
     NSObject *firstLaunch = [userDefaults objectForKey:FIRST_LAUNCH];
     if(firstLaunch){
-        self.firstLaunch = NO;
+        _firstLaunch = NO;
         
         // Last use
         NSDate *lastUse = (NSDate *)[userDefaults objectForKey:LAST_USE];
@@ -141,7 +186,7 @@ static BOOL _initialized = NO;
         //Application version changed
         NSString *appVersion = [userDefaults objectForKey:LAST_APPLICATION_VERSION];
         if(appVersion && ![appVersion isEqualToString:[ATTechnicalContext applicationVersion]]){
-            self.appVersionChanged = YES;
+            _appVersionChanged = YES;
             [userDefaults setObject:now forKey:APPLICATION_UPDATE];
             [userDefaults setInteger:1 forKey:LAUNCH_COUNT_SINCE_UPDATE];
             [userDefaults setObject:[ATTechnicalContext applicationVersion] forKey:LAST_APPLICATION_VERSION];
@@ -169,7 +214,7 @@ static BOOL _initialized = NO;
     
     // Update Lifecycle from SDK V1
     if([userDefaults objectForKey:@"firstLaunchDate"]){
-        self.firstLaunch = NO;
+        _firstLaunch = NO;
         [userDefaults setInteger:0 forKey:FIRST_LAUNCH];
         
         NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
@@ -188,7 +233,7 @@ static BOOL _initialized = NO;
         }
         
     } else {
-        self.firstLaunch = YES;
+        _firstLaunch = YES;
         [userDefaults setInteger:1 forKey:FIRST_LAUNCH];
         [userDefaults setInteger:1 forKey:LAUNCH_COUNT];
         [userDefaults setObject:now forKey:FIRST_LAUNCH_DATE];
@@ -226,10 +271,10 @@ static BOOL _initialized = NO;
         dateFormatter.dateFormat = @"yyyyMMdd";
         
         // First Launch
-        [self.parameters setObject:[NSNumber numberWithInteger:self.firstLaunch ? 1 : 0] forKey:@"fl"];
+        [self.parameters setObject:[NSNumber numberWithInteger:_firstLaunch ? 1 : 0] forKey:@"fl"];
         
         // First Launch after update
-        [self.parameters setObject:[NSNumber numberWithInteger:self.appVersionChanged ? 1 : 0] forKey:@"flau"];
+        [self.parameters setObject:[NSNumber numberWithInteger:_appVersionChanged ? 1 : 0] forKey:@"flau"];
         
         // Launch count of day
         [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_DAY_COUNT]] forKey:@"ldc"];
@@ -263,6 +308,9 @@ static BOOL _initialized = NO;
         
         // Days since last use
         [self.parameters setObject:[NSNumber numberWithInteger:self.daysSinceLastUse] forKey:@"dslu"];
+        
+        // SessionId
+        [self.parameters setObject:_sessionId forKey:@"sessionId"];
         
         NSString *json = [ATTool JSONStringify:
                           [[NSDictionary alloc] initWithObjectsAndKeys:self.parameters, @"lifecycle", nil]

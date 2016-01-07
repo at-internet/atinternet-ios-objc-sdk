@@ -50,12 +50,13 @@ SOFTWARE.
 
 @interface ATLifeCycle : NSObject
 
-@property (nonatomic) BOOL firstLaunch;
-
 - (instancetype)init;
 - (NSString * (^)())getMetrics;
 
 + (BOOL)isInitialized;
 + (void)setInitialized:(BOOL)initialized;
++ (BOOL)isFirstLaunch;
++ (void)applicationDidBecomeActive:(NSDictionary*)parameters;
++ (void)applicationDidEnterBackground;
 
 @end

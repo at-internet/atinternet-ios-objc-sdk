@@ -74,7 +74,7 @@
 		AE3AD51A1A93745900816486 /* ATConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = AEA615511A44849700371DDE /* ATConfiguration.h */; };
 		AE3AD51B1A93745900816486 /* ATTechnicalContext.h in Headers */ = {isa = PBXBuildFile; fileRef = CC08EAF71A8A408000CD1FC7 /* ATTechnicalContext.h */; };
 		AE3AD51C1A93745900816486 /* ATHit.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F3DB50B1A88AE4B0000898F /* ATHit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AE3AD51D1A93745900816486 /* ATLifeCycle.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F801DA51A8A53D0001AC133 /* ATLifeCycle.h */; };
+		AE3AD51D1A93745900816486 /* ATLifeCycle.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F801DA51A8A53D0001AC133 /* ATLifeCycle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE3AD51E1A93745900816486 /* ATParam.h in Headers */ = {isa = PBXBuildFile; fileRef = AE2F52E21A4820A0008BE228 /* ATParam.h */; };
 		AE3AD51F1A93745900816486 /* ATPluginProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = AE66720F1A8A4B2700239C5C /* ATPluginProtocol.h */; };
 		AE3AD5201A93745900816486 /* ATStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F0482DD1A8B9E4B00A51B90 /* ATStorage.h */; };

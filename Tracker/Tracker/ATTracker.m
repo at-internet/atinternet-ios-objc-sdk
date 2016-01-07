@@ -296,7 +296,7 @@ static BOOL _handleCrash = NO;
     _delegate = delegate;
     
     if (self.lifeCycle) {
-        if (self.lifeCycle.firstLaunch) {
+        if ([ATLifeCycle isFirstLaunch]) {
             if (_delegate) {
                 if ([_delegate respondsToSelector:@selector(trackerNeedsFirstLaunchApproval:)]) {
                     [_delegate trackerNeedsFirstLaunchApproval:@"Tracker first launch"];
@@ -314,12 +314,27 @@ static BOOL _handleCrash = NO;
     if (self = [super init]) {
         self.buffer = [[ATBuffer alloc] initWithTracker:self];
         self.configuration = [[ATConfiguration alloc] init: configuration];
+        if(![ATLifeCycle isInitialized]){
+            NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+            [notificationCenter addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+            [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+            [ATLifeCycle applicationDidBecomeActive:self.configuration.parameters];
+        }
         self.lifeCycle = [[ATLifeCycle alloc] init];
         self.businessObjects = [[NSMutableDictionary alloc] init];
         self.dispatcher = [[ATDispatcher alloc] initWithTracker:self];
     }
     return self;
 }
+
+-(void)applicationDidEnterBackground:(NSNotification*)notification {
+    [ATLifeCycle applicationDidEnterBackground];
+}
+
+-(void)applicationDidBecomeActive:(NSNotification*)notification {
+    [ATLifeCycle applicationDidBecomeActive:self.configuration.parameters];
+}
+
 
 - (NSString *)userId {
     NSString* hash = self.configuration.parameters[@"hashUserId"];

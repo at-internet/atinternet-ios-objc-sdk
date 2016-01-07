@@ -59,6 +59,7 @@ SOFTWARE.
     
     ATParamOption *opt = [[ATParamOption alloc] init];
     opt.append = YES;
+    opt.encode = YES;
     opt.separator = @"|";
     
     [self.tracker setStringParam:@"pdtl" value:[self buildProductName] options:opt];

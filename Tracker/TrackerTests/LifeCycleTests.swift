@@ -89,6 +89,8 @@ class LifeCycleTests: XCTestCase {
         XCTAssert(userDefaults.objectForKey(LAUNCH_COUNT) as! Int == 6, "LaunchCount doit être égale à 6")
         
     }
+    
+    
 
     func testFirstLaunchAndFirstScreenHit() {
         let lifeCycle = ATLifeCycle()
@@ -383,5 +385,12 @@ class LifeCycleTests: XCTestCase {
         let json = JSON(data: data!)
         
         XCTAssert(json["lifecycle"]["dsu"].intValue == 7, "la variable dsu doit être égale à 7")
+    }
+    
+    func testSecondSinceBackground() {
+        let now = NSDate()
+        let nowWith65 = NSDate().dateByAddingTimeInterval(65)
+        let delta = ATTool.secondsBetweenDates(now, toDate: nowWith65)
+        XCTAssert(delta == 65)
     }
 }

@@ -80,6 +80,15 @@ SOFTWARE.
 + (NSInteger)minutesBetweenDates:(NSDate *)fromDate toDate:(NSDate *)toDate;
 
 /**
+ Gets the number of seconds between two dates
+ 
+ @param fromDate
+ @param toDate
+ @return the number of seconds between fromDate and toDate
+ */
++ (NSInteger)secondsBetweenDates:(NSDate *)fromDate toDate:(NSDate *)toDate;
+
+/**
  Gets environment
  
  @return YES if testing, NO if not testing

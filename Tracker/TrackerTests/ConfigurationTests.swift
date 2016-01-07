@@ -41,8 +41,8 @@ class ConfigurationTests: XCTestCase {
         forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "plugins", "enableBackgroundTask", "storage", "persistIdentifiedVisistor"])
     // Configuration par défaut
     let defaultConf = NSMutableDictionary(
-        objects: ["logp", "logs", "xiti.com", "/hit.xiti", "549808", "false", "uuid", "false", "never", "", "false", "true", "", "10", "30", "true", "ext", "5"],
-        forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "enableBackgroundTask", "storage", "plugins", "hashUserId", "persistIdentifiedVisitor", "tvtURL", "tvtVisitDuration", "campaignLifetime", "campaignLastPersistence", "downloadSource", "tvtSpotValidityTime"])
+        objects: ["logp", "logs", "xiti.com", "/hit.xiti", "549808", "false", "uuid", "false", "never", "", "false", "true", "", "10", "30", "true", "ext", "5", "60"],
+        forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "enableBackgroundTask", "storage", "plugins", "hashUserId", "persistIdentifiedVisitor", "tvtURL", "tvtVisitDuration", "campaignLifetime", "campaignLastPersistence", "downloadSource", "tvtSpotValidityTime", "sessionBackgroundDuration"])
 
     override func setUp() {
         super.setUp()

@@ -119,6 +119,7 @@ SOFTWARE.
     
     ATParamOption *option = [[ATParamOption alloc] init];
     option.append = YES;
+    option.encode = YES;
     [self.tracker setStringParam:[self getStringAction:self.action] value:spot options:option];
     
     if (self.action == ATAdActionTouch) {

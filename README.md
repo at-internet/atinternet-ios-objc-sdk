@@ -34,8 +34,8 @@ target 'MyProject' do
 pod "ATInternet-iOS-ObjC-SDK/iOS",">=2.0"
 end
 
-target 'MyProject App Extension' do
-pod "ATInternet-iOS-ObjC-SDK/AppExtension", ">=2.0"
+target 'MyProject WatchKit 1 Extension' do
+pod "ATInternet-iOS-ObjC-SDK/WatchExtension", ">=2.0"
 end
 
 ```

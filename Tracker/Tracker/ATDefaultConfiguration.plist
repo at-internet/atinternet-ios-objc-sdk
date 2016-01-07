@@ -4,6 +4,8 @@
 <dict>
 	<key>campaignLifetime</key>
 	<string>30</string>
+	<key>sessionBackgroundDuration</key>
+	<string>60</string>
 	<key>campaignLastPersistence</key>
 	<string>true</string>
 	<key>tvtURL</key>
