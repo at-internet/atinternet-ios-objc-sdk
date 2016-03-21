@@ -37,11 +37,11 @@ class ConfigurationTests: XCTestCase {
     
     // Configuration définie
     let myConf = NSMutableDictionary(
-        objects: ["ctlog", "ctlogs", "ctdomain", "ctpixelpath", "ctsite", "ctsecure", "ctidentifier", "ctplugin", "ctbgtask", "ctstorage", "ctidentifiedvisitor"],
-        forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "plugins", "enableBackgroundTask", "storage", "persistIdentifiedVisistor"])
+        objects: ["logtest", "logstest", "xiti.com", "/hit.xiti", "", "false", "uuid", "false", "never", "", "false", "true", "", "10", "30", "true", "ext", "5", "30"],
+        forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "enableBackgroundTask", "storage", "plugins", "hashUserId", "persistIdentifiedVisitor", "tvtURL", "tvtVisitDuration", "campaignLifetime", "campaignLastPersistence", "downloadSource", "tvtSpotValidityTime", "sessionBackgroundDuration"])
     // Configuration par défaut
     let defaultConf = NSMutableDictionary(
-        objects: ["logp", "logs", "xiti.com", "/hit.xiti", "549808", "false", "uuid", "false", "never", "", "false", "true", "", "10", "30", "true", "ext", "5", "60"],
+        objects: ["", "", "xiti.com", "/hit.xiti", "", "false", "uuid", "false", "never", "", "false", "true", "", "10", "30", "true", "ext", "5", "60"],
         forKeys: ["log", "logSSL", "domain", "pixelPath", "site", "secure", "identifier", "enableBackgroundTask", "storage", "plugins", "hashUserId", "persistIdentifiedVisitor", "tvtURL", "tvtVisitDuration", "campaignLifetime", "campaignLastPersistence", "downloadSource", "tvtSpotValidityTime", "sessionBackgroundDuration"])
 
     override func setUp() {
@@ -63,6 +63,8 @@ class ConfigurationTests: XCTestCase {
     func testDefaultConfigurationGetter() {
         var testOK = true;
         let config = ATConfiguration().parameters
+        print(defaultConf.description)
+                print(config.description)
 
         for (key, value) in config {
             let keyStr = key as! NSString
@@ -85,7 +87,7 @@ class ConfigurationTests: XCTestCase {
     // On vérifie l'initialisation avec la configuration définie
     func testCustomConfigurationGetter() {
         var testOK = true;
-        let config = ATConfiguration(myConf).parameters
+        let config = ATConfiguration(dictionary: myConf).parameters
         
         for (key,value) in config {
             let keyStr = key as! NSString

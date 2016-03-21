@@ -288,6 +288,205 @@ class TrackerTests: XCTestCase, ATTrackerDelegate {
         waitForExpectationsWithTimeout(10, handler: nil)
     }
     
+    func testSetLogConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setLog("logtest", completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["log"] as! String == "logtest", "Le nouveau log est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetSecuredLogConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setSecuredLog("logstest", completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["logSSL"] as! String == "logstest", "Le nouveau log sécurisé est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetSiteIdConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setSiteId(123456, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["site"] as! String == "123456", "Le nouveau site est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetDomainConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setDomain("newdomain.com", completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["domain"] as! String == "newdomain.com", "Le nouveau domaine est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetOfflineModeConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setOfflineMode(.Never, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["storage"] as! String == "never", "Le nouveau mode offline est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetPluginsConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+    
+        tracker.setPlugins([NSNumber(int: ATPluginKey.Nuggad.rawValue),NSNumber(int: ATPluginKey.TvTracking.rawValue)], completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["plugins"] as! String == "nuggad,tvtracking", "Les nouveaux plugins sont incorrects")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetSecureModeConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setSecureModeEnabled(true, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["secure"] as! String == "true", "Le nouveau mode securise est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetIdentifierConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setIdentifierType(.ATIDFV, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["identifier"] as! String == "idfv", "Le nouvel identifiant est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetHashUserIdModeConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setHashUserIdEnabled(true, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["hashUserId"] as! String == "true", "Le nouveau hashage est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetPixelPathConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setPixelPath("/toto.xiti", completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["pixelPath"] as! String == "/toto.xiti", "Le nouveau pixel path est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetPersistIdentifiedVisitorConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setPersistentIdentifiedVisitorEnabled(true, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["persistIdentifiedVisitor"] as! String == "true", "Le nouveau mode de persistence est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetTVTUrlConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setTvTrackingUrl("test.com", completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["tvtURL"] as! String == "test.com", "La nouvelle tvtURL est incorrecte")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetTVTVisitDurationConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setTvTrackingVisitDuration(20, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["tvtVisitDuration"] as! String == "20", "La nouvelle tvtVisitDuration est incorrecte")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetTVTSpotValidityTimeConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setTvTrackingSpotValidityTime(4, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["tvtSpotValidityTime"] as! String == "4", "Le nouveau tvtSpotValidityTime est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetEnabledBGTaskConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setBackgroundTaskEnabled(true, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["enableBackgroundTask"] as! String == "true", "Le nouveau mode de background task est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetCampaignLastPersistenceConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setCampaignLastPersistenceEnabled(false, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["campaignLastPersistence"] as! String == "false", "Le nouveau mode de persistence est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetCampaignLifetimeConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setCampaignLifetime(54, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["campaignLifetime"] as! String == "54", "Le nouveau campaignLifetime est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
+    func testSetSessionBackgroundDurationConfiguration() {
+        let expectation = expectationWithDescription("test")
+        
+        tracker.setSessionBackgroundDuration(54, completionHandler: { (isSet) -> Void in
+            XCTAssert(self.tracker.configuration.parameters["sessionBackgroundDuration"] as! String == "54", "Le nouveau sessionBackgroundDuration est incorrect")
+            expectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
     func testReplaceSomeConfiguration() {
         let expectation = expectationWithDescription("test")
         

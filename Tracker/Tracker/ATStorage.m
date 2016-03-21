@@ -63,10 +63,12 @@ NSString* entityName = @"ATStoredOfflineHit";
 
 - (NSManagedObjectModel *)managedObjectModel {
     if(!_managedObjectModel) {
-        NSString *bundlePath = [ATTool isTesting] ?
-        [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"] :
-        [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
-
+        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
+        
+        if(!bundlePath){
+            bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"];
+        }
+        
         NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
         if(bundle) {
             NSString* modelPath = [bundle pathForResource:@"ATTracker" ofType:@"momd"];

@@ -296,7 +296,7 @@ static BOOL _handleCrash = NO;
     _delegate = delegate;
     
     if (self.lifeCycle) {
-        if ([ATLifeCycle isFirstLaunch]) {
+        if ([ATLifeCycle isFirstSession]) {
             if (_delegate) {
                 if ([_delegate respondsToSelector:@selector(trackerNeedsFirstLaunchApproval:)]) {
                     [_delegate trackerNeedsFirstLaunchApproval:@"Tracker first launch"];
@@ -313,7 +313,7 @@ static BOOL _handleCrash = NO;
 - (instancetype)init:(NSMutableDictionary *)configuration {
     if (self = [super init]) {
         self.buffer = [[ATBuffer alloc] initWithTracker:self];
-        self.configuration = [[ATConfiguration alloc] init: configuration];
+        self.configuration = [[ATConfiguration alloc] initWithDictionary: configuration];
         if(![ATLifeCycle isInitialized]){
             NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
             [notificationCenter addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -348,6 +348,208 @@ static BOOL _handleCrash = NO;
 
 + (void)setDoNotTrack:(BOOL)enable {
     ATTechnicalContext.doNotTrack = enable;
+}
+
+- (void)setLog:(NSString *)log completionHandler:(void (^)(BOOL))completionHandler {
+    if (log) {
+        [self setConfig:AT_CONF_LOG value:log completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for log, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setSecuredLog:(NSString *)securedLog completionHandler:(void (^)(BOOL))completionHandler {
+    if (securedLog) {
+        [self setConfig:AT_CONF_LOGSSL value:securedLog completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for secured log, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setSiteId:(int)siteId completionHandler:(void (^)(BOOL))completionHandler {
+    if (siteId > 0) {
+        [self setConfig:AT_CONF_SITE value:[NSString stringWithFormat:@"%d", siteId] completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for site id, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setDomain:(NSString *)domain completionHandler:(void (^)(BOOL))completionHandler {
+    if (domain) {
+        [self setConfig:AT_CONF_DOMAIN value:domain completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for domain, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setOfflineMode:(ATOfflineMode)offlineMode completionHandler:(void (^)(BOOL))completionHandler {
+    NSString* value;
+    switch (offlineMode) {
+        case ATAlways:
+            value = @"always";
+            break;
+        case ATNever:
+            value = @"never";
+            break;
+        default:
+            value = @"required";
+            break;
+    }
+    [self setConfig:AT_CONF_OFFLINE_MODE value:value completionHandler:completionHandler];
+}
+
+- (void)setSecureModeEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler {
+    if(enabled){
+        [self setConfig:AT_CONF_SECURE value:@"true" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_SECURE value:@"false" completionHandler:completionHandler];
+    }
+}
+
+- (void)setIdentifierType:(ATIdentifierType)identifierType completionHandler:(void (^)(BOOL))completionHandler {
+    if(identifierType == ATIDFV){
+        [self setConfig:AT_CONF_IDENTIFIER value:@"idfv" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_IDENTIFIER value:@"uuid" completionHandler:completionHandler];
+    }
+}
+
+- (void)setHashUserIdEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler {
+    if(enabled){
+        [self setConfig:AT_CONF_HASH_USER_ID value:@"true" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_HASH_USER_ID value:@"false" completionHandler:completionHandler];
+    }
+}
+
+- (void)setPlugins:(NSArray *)pluginArray completionHandler:(void (^)(BOOL))completionHandler {
+    NSMutableString* plugins = [[NSMutableString alloc] initWithString:@""];
+    for (id obj in pluginArray) {
+        if ([obj integerValue] == 0) {
+            if(![plugins isEqualToString:@""]){
+                [plugins appendString:@","];
+            }
+            [plugins appendString:@"tvtracking"];
+        } else if ([obj integerValue] == 1) {
+            if(![plugins isEqualToString:@""]){
+                [plugins appendString:@","];
+            }
+            [plugins appendString:@"nuggad"];
+        }
+    }
+    [self setConfig:AT_CONF_PLUGINS value:plugins completionHandler:completionHandler];
+}
+
+- (void)setPixelPath:(NSString *)pixelPath completionHandler:(void (^)(BOOL))completionHandler {
+    if (pixelPath) {
+        [self setConfig:AT_CONF_PIXEL_PATH value:pixelPath completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for pixel path, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setPersistentIdentifiedVisitorEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler {
+    if(enabled){
+        [self setConfig:AT_CONF_PERSIST_IDENTIFIED_VISITOR value:@"true" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_PERSIST_IDENTIFIED_VISITOR value:@"false" completionHandler:completionHandler];
+    }
+}
+
+- (void)setTvTrackingUrl:(NSString *)url completionHandler:(void (^)(BOOL))completionHandler {
+    if (url) {
+        [self setConfig:AT_CONF_TVTRACKING_URL value:url completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for tvtracking url, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setTvTrackingVisitDuration:(int)visitDuration completionHandler:(void (^)(BOOL))completionHandler {
+    if (visitDuration > 0) {
+        [self setConfig:AT_CONF_TVTRACKING_VISIT_DURATION value:[NSString stringWithFormat:@"%d", visitDuration] completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for tvtracking visit duration, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setTvTrackingSpotValidityTime:(int)time completionHandler:(void (^)(BOOL))completionHandler {
+    if (time > 0) {
+        [self setConfig:AT_CONF_TVTRACKING_SPOT_VALIDITY_TIME value:[NSString stringWithFormat:@"%d", time] completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for tvtracking spot validity time, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setBackgroundTaskEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler {
+    if(enabled){
+        [self setConfig:AT_CONF_ENABLE_BACKGROUND_TASK value:@"true" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_ENABLE_BACKGROUND_TASK value:@"false" completionHandler:completionHandler];
+    }
+}
+
+- (void)setCampaignLastPersistenceEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler {
+    if(enabled){
+        [self setConfig:AT_CONF_CAMPAIGN_LAST_PERSISTENCE value:@"true" completionHandler:completionHandler];
+    } else {
+        [self setConfig:AT_CONF_CAMPAIGN_LAST_PERSISTENCE value:@"false" completionHandler:completionHandler];
+    }
+}
+
+- (void)setCampaignLifetime:(int)lifetime completionHandler:(void (^)(BOOL))completionHandler {
+    if (lifetime > 0) {
+        [self setConfig:AT_CONF_CAMPAIGN_LIFETIME value:[NSString stringWithFormat:@"%d", lifetime] completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for scampaign lifetime, default value retained"];
+            }
+        }
+    }
+}
+
+- (void)setSessionBackgroundDuration:(int)duration completionHandler:(void (^)(BOOL))completionHandler {
+    if (duration > 0) {
+        [self setConfig:AT_CONF_SESSION_BACKGROUND_DURATION value:[NSString stringWithFormat:@"%d", duration] completionHandler:completionHandler];
+    } else {
+        if(self.delegate) {
+            if ([self.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.delegate warningDidOccur:@"Bad value for session background duration, default value retained"];
+            }
+        }
+    }
 }
 
 - (void)setConfig:(NSDictionary *)configuration override:(BOOL)overrideConfig completionHandler:(void (^)(BOOL isSet))completionHandler {
@@ -523,6 +725,10 @@ static BOOL _handleCrash = NO;
             }
         }
     }
+}
+
+- (NSDictionary*)config {
+    return self.configuration.parameters;
 }
 
 - (ATTracker *)setClosureParam:(NSString *)key value:(NSString *(^)())value {
@@ -701,7 +907,6 @@ static BOOL _handleCrash = NO;
 }
 
 - (void)dispatch {
-    
     if ([self.businessObjects count] > 0) {
         
         NSMutableArray *onAppAds = [[NSMutableArray alloc] init];

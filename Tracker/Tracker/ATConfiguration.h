@@ -61,6 +61,6 @@ SOFTWARE.
  @param configuration custom configuration
  @returns a newly initialized object with custom configuration
  */
-- (instancetype)init:(NSMutableDictionary *)configuration NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithDictionary:(NSMutableDictionary *)configuration;
 
 @end

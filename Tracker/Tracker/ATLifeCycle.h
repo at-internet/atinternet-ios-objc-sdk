@@ -36,16 +36,13 @@ SOFTWARE.
 #import "ATHit.h"
 
 
-#define FIRST_LAUNCH                @"ATFirstLaunch"
+#define FIRST_SESSION               @"ATFirstLaunch"
 #define LAST_USE                    @"ATLastUse"
-#define FIRST_LAUNCH_DATE           @"ATFirstLaunchDate"
-#define LAUNCH_DAY_COUNT            @"ATLaunchDayCount"
-#define LAUNCH_MONTH_COUNT          @"ATLaunchMonthCount"
-#define LAUNCH_WEEK_COUNT           @"ATLaunchWeekCount"
-#define LAUNCH_COUNT                @"ATLaunchCount"
+#define FIRST_SESSION_DATE          @"ATFirstLaunchDate"
+#define SESSION_COUNT               @"ATLaunchCount"
 #define LAST_APPLICATION_VERSION    @"ATLastApplicationVersion"
 #define APPLICATION_UPDATE          @"ATApplicationUpdate"
-#define LAUNCH_COUNT_SINCE_UPDATE   @"ATLaunchCountSinceUpdate"
+#define SESSION_COUNT_SINCE_UPDATE  @"ATLaunchCountSinceUpdate"
 
 
 @interface ATLifeCycle : NSObject
@@ -55,7 +52,7 @@ SOFTWARE.
 
 + (BOOL)isInitialized;
 + (void)setInitialized:(BOOL)initialized;
-+ (BOOL)isFirstLaunch;
++ (BOOL)isFirstSession;
 + (void)applicationDidBecomeActive:(NSDictionary*)parameters;
 + (void)applicationDidEnterBackground;
 

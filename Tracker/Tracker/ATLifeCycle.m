@@ -39,7 +39,7 @@ SOFTWARE.
 
 
 static BOOL _initialized = NO;
-static BOOL _firstLaunch = YES;
+static BOOL _firstSession = YES;
 static BOOL _appVersionChanged = NO;
 static NSString* _sessionId = nil;
 static NSDate* _timeInBackground = nil;
@@ -49,8 +49,8 @@ static NSDate* _timeInBackground = nil;
 
 // List of lifecycle metrics
 @property (nonatomic, strong) NSMutableDictionary *parameters;
-// Number of days since last app use
-@property (nonatomic) NSInteger daysSinceLastUse;
+// Number of days since last app session
+@property (nonatomic) NSInteger daysSinceLastSession;
 // Calendar type
 @property (nonatomic, strong) NSCalendar *calendar;
 
@@ -62,8 +62,8 @@ static NSDate* _timeInBackground = nil;
     return _initialized;
 }
 
-+ (BOOL)isFirstLaunch {
-    return _firstLaunch;
++ (BOOL)isFirstSession {
+    return _firstSession;
 }
 
 + (void)setInitialized:(BOOL)initialized {
@@ -78,6 +78,12 @@ static NSDate* _timeInBackground = nil;
             if(_timeInBackground){
                 if([ATTool secondsBetweenDates:_timeInBackground toDate:[[NSDate alloc] init]] > sessionConfig){
                     _sessionId = [[NSUUID UUID] UUIDString];
+                    [self updateFirstLaunch];
+                    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+                    NSNumber *launchCount = [userDefaults objectForKey:SESSION_COUNT];
+                    if(launchCount != nil){
+                        [userDefaults setInteger:[launchCount integerValue]+1 forKey:SESSION_COUNT];
+                    }
                 }
                 _timeInBackground = nil;
             }
@@ -88,15 +94,14 @@ static NSDate* _timeInBackground = nil;
 
 + (void)applicationDidEnterBackground {
     _timeInBackground = [[NSDate alloc] init];
-    [self updateFirstLaunch];
 }
 
 + (void)updateFirstLaunch {
-    _firstLaunch = NO;
+    _firstSession = NO;
     _appVersionChanged = NO;
     
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:0 forKey:FIRST_LAUNCH];
+    [userDefaults setInteger:0 forKey:FIRST_SESSION];
     [userDefaults synchronize];
 }
 
@@ -136,51 +141,21 @@ static NSDate* _timeInBackground = nil;
     
     NSDate *now = [[NSDate alloc] init];
     
-    // Not first launch
-    NSObject *firstLaunch = [userDefaults objectForKey:FIRST_LAUNCH];
-    if(firstLaunch){
-        _firstLaunch = NO;
+    // Not first session
+    NSObject *firstSession = [userDefaults objectForKey:FIRST_SESSION];
+    if(firstSession){
+        _firstSession = NO;
         
         // Last use
         NSDate *lastUse = (NSDate *)[userDefaults objectForKey:LAST_USE];
         if(lastUse){
-            self.daysSinceLastUse = [ATTool daysBetweenDates:lastUse toDate:now];
+            self.daysSinceLastSession = [ATTool daysBetweenDates:lastUse toDate:now];
         }
         
-        //Launch count
-        NSNumber *launchCount = [userDefaults objectForKey:LAUNCH_COUNT];
+        //Session count
+        NSNumber *launchCount = [userDefaults objectForKey:SESSION_COUNT];
         if(launchCount != nil){
-            [userDefaults setInteger:[launchCount integerValue]+1 forKey:LAUNCH_COUNT];
-        }
-        
-        //NSNumber of day
-        NSNumber *launchDayCount = [userDefaults objectForKey:LAUNCH_DAY_COUNT];
-        if(launchDayCount != nil){
-            if([[dateFormatter stringFromDate:lastUse] isEqualToString: [dateFormatter stringFromDate:now]]){
-                [userDefaults setInteger:[launchDayCount integerValue] + 1 forKey:LAUNCH_DAY_COUNT];
-            }else{
-                [userDefaults setInteger:1 forKey:LAUNCH_DAY_COUNT];
-            }
-        }
-        
-        //Launch of week
-        NSNumber *launchWeekCount = [userDefaults objectForKey:LAUNCH_WEEK_COUNT];
-        if(launchWeekCount != nil){
-            if([[weekFormatter stringFromDate:lastUse] isEqualToString:[weekFormatter stringFromDate:now]]){
-                [userDefaults setInteger:[launchWeekCount integerValue] + 1 forKey:LAUNCH_WEEK_COUNT];
-            }else{
-                [userDefaults setInteger:1 forKey:LAUNCH_WEEK_COUNT];
-            }
-        }
-        
-        //Launch of month
-        NSNumber *launchMonthCount = [userDefaults objectForKey:LAUNCH_MONTH_COUNT];
-        if(launchMonthCount != nil){
-            if([[monthFormatter stringFromDate:lastUse] isEqualToString:[monthFormatter stringFromDate:now]]){
-                [userDefaults setInteger:[launchMonthCount integerValue]+1 forKey:LAUNCH_MONTH_COUNT];
-            }else{
-                [userDefaults setInteger:1 forKey:LAUNCH_MONTH_COUNT];
-            }
+            [userDefaults setInteger:[launchCount integerValue]+1 forKey:SESSION_COUNT];
         }
         
         //Application version changed
@@ -188,12 +163,12 @@ static NSDate* _timeInBackground = nil;
         if(appVersion && ![appVersion isEqualToString:[ATTechnicalContext applicationVersion]]){
             _appVersionChanged = YES;
             [userDefaults setObject:now forKey:APPLICATION_UPDATE];
-            [userDefaults setInteger:1 forKey:LAUNCH_COUNT_SINCE_UPDATE];
+            [userDefaults setInteger:1 forKey:SESSION_COUNT_SINCE_UPDATE];
             [userDefaults setObject:[ATTechnicalContext applicationVersion] forKey:LAST_APPLICATION_VERSION];
         }else{
-            NSInteger launchCountSinceUpdate = [userDefaults integerForKey:LAUNCH_COUNT_SINCE_UPDATE];
+            NSInteger launchCountSinceUpdate = [userDefaults integerForKey:SESSION_COUNT_SINCE_UPDATE];
             if(launchCountSinceUpdate){
-                [userDefaults setInteger:launchCountSinceUpdate + 1 forKey:LAUNCH_COUNT_SINCE_UPDATE];
+                [userDefaults setInteger:launchCountSinceUpdate + 1 forKey:SESSION_COUNT_SINCE_UPDATE];
             }
         }
         
@@ -214,41 +189,32 @@ static NSDate* _timeInBackground = nil;
     
     // Update Lifecycle from SDK V1
     if([userDefaults objectForKey:@"firstLaunchDate"]){
-        _firstLaunch = NO;
-        [userDefaults setInteger:0 forKey:FIRST_LAUNCH];
+        _firstSession = NO;
+        [userDefaults setInteger:0 forKey:FIRST_SESSION];
         
         NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
         dateformatter.calendar = self.calendar;
         dateformatter.dateFormat = @"YYYYMMdd";
         
         NSString *fld = [userDefaults objectForKey:@"firstLaunchDate"];
-        [userDefaults setObject:[dateformatter dateFromString:fld]forKey:FIRST_LAUNCH_DATE];
+        [userDefaults setObject:[dateformatter dateFromString:fld]forKey:FIRST_SESSION_DATE];
         [userDefaults setObject:nil forKey:@"firstLaunchDate"];
         
-        [userDefaults setInteger:[userDefaults integerForKey:@"ATLaunchCount"] + 1 forKey:LAUNCH_COUNT];
+        [userDefaults setInteger:[userDefaults integerForKey:@"ATLaunchCount"] + 1 forKey:SESSION_COUNT];
         
         NSDate *lastUse = (NSDate *)[userDefaults objectForKey:@"lastUseDate"];
         if (lastUse) {
-            self.daysSinceLastUse = [ATTool daysBetweenDates:lastUse toDate:now];
+            self.daysSinceLastSession = [ATTool daysBetweenDates:lastUse toDate:now];
         }
         
     } else {
-        _firstLaunch = YES;
-        [userDefaults setInteger:1 forKey:FIRST_LAUNCH];
-        [userDefaults setInteger:1 forKey:LAUNCH_COUNT];
-        [userDefaults setObject:now forKey:FIRST_LAUNCH_DATE];
+        _firstSession = YES;
+        [userDefaults setInteger:1 forKey:FIRST_SESSION];
+        [userDefaults setInteger:1 forKey:SESSION_COUNT];
+        [userDefaults setObject:now forKey:FIRST_SESSION_DATE];
     }
     
     [userDefaults setObject:now forKey:LAST_USE];
-    
-    // Launch of day
-    [userDefaults setInteger:1 forKey:LAUNCH_DAY_COUNT];
-    
-    // Launch of week
-    [userDefaults setInteger:1 forKey:LAUNCH_WEEK_COUNT];
-    
-    // Launch of month
-    [userDefaults setInteger:1 forKey:LAUNCH_MONTH_COUNT];
     
     // Application version changed
     [userDefaults setObject:[ATTechnicalContext applicationVersion] forKey:LAST_APPLICATION_VERSION];
@@ -260,54 +226,48 @@ static NSDate* _timeInBackground = nil;
     return ^NSString *() {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         
-        if (![userDefaults objectForKey:FIRST_LAUNCH]) {
+        if (![userDefaults objectForKey:FIRST_SESSION]) {
             [self firstLaunchInit];
         }
         
-        NSDate *firstLaunchDate = [userDefaults objectForKey:FIRST_LAUNCH_DATE];
+        NSDate *firstLaunchDate = [userDefaults objectForKey:FIRST_SESSION_DATE];
         NSDate *now = [[NSDate alloc] init];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         dateFormatter.calendar = self.calendar;
         dateFormatter.dateFormat = @"yyyyMMdd";
         
-        // First Launch
-        [self.parameters setObject:[NSNumber numberWithInteger:_firstLaunch ? 1 : 0] forKey:@"fl"];
+        // First Session
+        [self.parameters setObject:[NSNumber numberWithInteger:_firstSession ? 1 : 0] forKey:@"fs"];
         
-        // First Launch after update
-        [self.parameters setObject:[NSNumber numberWithInteger:_appVersionChanged ? 1 : 0] forKey:@"flau"];
+        // First Session after update
+        [self.parameters setObject:[NSNumber numberWithInteger:_appVersionChanged ? 1 : 0] forKey:@"fsau"];
         
-        // Launch count of day
-        [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_DAY_COUNT]] forKey:@"ldc"];
-        
-        // Launch count of week
-        [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_WEEK_COUNT]] forKey:@"lwc"];
-        
-        // Launch count of month
-        [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_MONTH_COUNT]] forKey:@"lmc"];
-        
-        // Launch count since update
-        if([userDefaults integerForKey:LAUNCH_COUNT_SINCE_UPDATE]){
-            [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_COUNT_SINCE_UPDATE]] forKey:@"lcsu"];
+        // Session count since update
+        if([userDefaults integerForKey:SESSION_COUNT_SINCE_UPDATE]){
+            [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:SESSION_COUNT_SINCE_UPDATE]] forKey:@"scsu"];
         }
         
-        // Launch count
-        [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:LAUNCH_COUNT]] forKey:@"lc"];
+        // Session count
+        [self.parameters setObject:[NSNumber numberWithInteger:[userDefaults integerForKey:SESSION_COUNT]] forKey:@"sc"];
         
         // First launch date
-        [self.parameters setObject:[NSNumber numberWithInteger:[[dateFormatter stringFromDate:firstLaunchDate] intValue]] forKey:@"fld"];
+        [self.parameters setObject:[NSNumber numberWithInteger:[[dateFormatter stringFromDate:firstLaunchDate] intValue]] forKey:@"fsd"];
         
-        // Days since first launch
-        [self.parameters setObject:[NSNumber numberWithInteger:[ATTool daysBetweenDates:firstLaunchDate toDate:now]] forKey:@"dsfl"];
+        // Days since first Session
+        [self.parameters setObject:[NSNumber numberWithInteger:[ATTool daysBetweenDates:firstLaunchDate toDate:now]] forKey:@"dsfs"];
         
-        // Update launch date & days since update
+        // First Session date after update & days since update
         NSDate *applicationUpdate = [userDefaults objectForKey:APPLICATION_UPDATE];
         if(applicationUpdate){
-            [self.parameters setObject:[NSNumber numberWithInteger:[[dateFormatter stringFromDate:applicationUpdate] intValue]] forKey:@"uld"];
+            [self.parameters setObject:[NSNumber numberWithInteger:[[dateFormatter stringFromDate:applicationUpdate] intValue]] forKey:@"fsdau"];
             [self.parameters setObject:[NSNumber numberWithInteger:[ATTool daysBetweenDates:applicationUpdate toDate:now]] forKey:@"dsu"];
         }
         
-        // Days since last use
-        [self.parameters setObject:[NSNumber numberWithInteger:self.daysSinceLastUse] forKey:@"dslu"];
+        // Days since last Session
+        [self.parameters setObject:[NSNumber numberWithInteger:self.daysSinceLastSession] forKey:@"dsls"];
+        
+        // SessionId
+        [self.parameters setObject:_sessionId forKey:@"sessionId"];
         
         // SessionId
         [self.parameters setObject:_sessionId forKey:@"sessionId"];

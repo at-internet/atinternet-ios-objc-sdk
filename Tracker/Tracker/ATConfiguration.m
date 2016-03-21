@@ -56,26 +56,32 @@ SOFTWARE.
 @implementation ATConfiguration
 
 - (instancetype)init {
-    NSString *bundlePath = [ATTool isTesting] ?
-    [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"] :
-    [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
-    
-    NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
-    NSString *path = [bundle pathForResource:@"ATDefaultConfiguration" ofType:@"plist"];
-    
-    if (path) {
-        NSMutableDictionary *defaultConf = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+    if (self = [super init]) {
+        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
         
-        return [self init:defaultConf];
+        if(!bundlePath){
+            bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"];
+        }
+        
+        NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
+        NSString *path = [bundle pathForResource:@"ATDefaultConfiguration" ofType:@"plist"];
+        
+        if (path) {
+            NSMutableDictionary *defaultConf = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+            if (defaultConf) {
+                self.parameters = defaultConf;
+            }
+        }
     }
     
-    return nil;
+    return self;
 }
 
-- (instancetype)init:(NSMutableDictionary *)configuration {
-    if (self = [super init]) {
-        if (configuration) {
-            self.parameters = configuration;
+- (instancetype)initWithDictionary:(NSMutableDictionary *)configuration {
+    self = [self init];
+    if (configuration) {
+        for (NSString* key in configuration.allKeys) {
+            [self.parameters setObject:[configuration objectForKey:key] forKey:key];
         }
     }
     return self;

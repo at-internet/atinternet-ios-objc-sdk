@@ -75,10 +75,55 @@ typedef NS_ENUM(int, ATHitStatus) {
     ATHitStatusSuccess = 1
 };
 
+/**
+Offline mode
+*/
+typedef NS_ENUM(int, ATOfflineMode) {
+    ATAlways = 0,
+    ATRequired = 1,
+    ATNever = 2,
+};
+
+/**
+ Identifier type
+ */
+typedef NS_ENUM(int, ATIdentifierType) {
+    ATUUID = 0,
+    ATIDFV = 1
+};
+
+/**
+ Identifier type
+ */
+typedef NS_ENUM(int, ATPluginKey) {
+    ATTvTracking = 0,
+    ATNuggad = 1
+};
 
 #pragma mark Tracker
 
 @interface ATTracker : NSObject
+
+#pragma mark -- Constants Configuration
+
+#define AT_CONF_LOG                             @"log"
+#define AT_CONF_LOGSSL                          @"logSSL"
+#define AT_CONF_DOMAIN                          @"domain"
+#define AT_CONF_PIXEL_PATH                      @"pixelPath"
+#define AT_CONF_SITE                            @"site"
+#define AT_CONF_IDENTIFIER                      @"identifier"
+#define AT_CONF_SECURE                          @"secure"
+#define AT_CONF_OFFLINE_MODE                    @"storage"
+#define AT_CONF_PLUGINS                         @"plugins"
+#define AT_CONF_CAMPAIGN_LIFETIME               @"campaignLifetime"
+#define AT_CONF_SESSION_BACKGROUND_DURATION     @"sessionBackgroundDuration"
+#define AT_CONF_CAMPAIGN_LAST_PERSISTENCE       @"campaignLastPersistence"
+#define AT_CONF_TVTRACKING_URL                  @"tvtURL"
+#define AT_CONF_TVTRACKING_VISIT_DURATION       @"tvtVisitDuration"
+#define AT_CONF_TVTRACKING_SPOT_VALIDITY_TIME   @"tvtSpotValidityTime"
+#define AT_CONF_PERSIST_IDENTIFIED_VISITOR      @"persistIdentifiedVisitor"
+#define AT_CONF_HASH_USER_ID                    @"hashUserId"
+#define AT_CONF_ENABLE_BACKGROUND_TASK          @"enableBackgroundTask"
 
 #pragma mark - Properties
 
@@ -92,6 +137,7 @@ typedef NS_ENUM(int, ATHitStatus) {
 @property (nonatomic, strong) NSMutableDictionary *businessObjects;
 @property (nonatomic, strong) ATBuffer *buffer;
 @property (nonatomic, strong) ATConfiguration *configuration;
+@property (nonatomic, strong, readonly) NSDictionary *config;
 @property (nonatomic, strong) ATContext *context;
 @property (nonatomic, strong) ATDispatcher *dispatcher;
 @property (nonatomic, strong) ATLifeCycle *lifeCycle;
@@ -158,6 +204,132 @@ typedef NS_ENUM(int, ATHitStatus) {
  @param completionHandler this part of code will be executed when the configuration is handled by the tracker
  */
 - (void)setConfig:(NSString *)key value:(NSString *)value completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new log
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setLog:(NSString *)log completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new secured log
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setSecuredLog:(NSString *)securedLog completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new domain
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setDomain:(NSString *)domain completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new site id
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setSiteId:(int)siteId completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new offline mode
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setOfflineMode:(ATOfflineMode)offlineMode completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Enable secure mode
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setSecureModeEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new identifier type
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setIdentifierType:(ATIdentifierType)identifierType completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Enable hash user id
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setHashUserIdEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set new plugins
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setPlugins:(NSArray *)pluginsArray completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new pixel path
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setPixelPath:(NSString *)pixelPath completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Enable persistence identified visitor
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setPersistentIdentifiedVisitorEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Enable background task
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setBackgroundTaskEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new tvt url
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setTvTrackingUrl:(NSString *)url completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new tvt visit duration
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setTvTrackingVisitDuration:(int)visitDuration completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new tvt visit duration
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setTvTrackingSpotValidityTime:(int)time completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Enable campaign last persistence
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setCampaignLastPersistenceEnabled:(BOOL)enabled completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new campaign lifetime
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setCampaignLifetime:(int)lifetime completionHandler:(void (^)(BOOL))completionHandler;
+
+/**
+ Set a new campaign lifetime
+ @param configuration a new configuration key of the tracker
+ @param completionHandler this part of code will be executed when the configuration is handled by the tracker
+ */
+- (void)setSessionBackgroundDuration:(int)duration completionHandler:(void (^)(BOOL))completionHandler;
 
 #pragma mark -- Parameter
 

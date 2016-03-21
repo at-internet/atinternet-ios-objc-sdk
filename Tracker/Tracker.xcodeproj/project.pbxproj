@@ -236,6 +236,9 @@
 		CC340E021A8B4FB300D96276 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC340E011A8B4FB300D96276 /* Foundation.framework */; };
 		CCCA059E1ADCFF09007EC6F3 /* ATSelfPromotion.h in Headers */ = {isa = PBXBuildFile; fileRef = CCCA059C1ADCFF09007EC6F3 /* ATSelfPromotion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CCCA059F1ADCFF09007EC6F3 /* ATSelfPromotion.m in Sources */ = {isa = PBXBuildFile; fileRef = CCCA059D1ADCFF09007EC6F3 /* ATSelfPromotion.m */; };
+		CCE7333F1C9875B5000928EC /* ATDefaultTrackerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CCE7333D1C9875B5000928EC /* ATDefaultTrackerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CCE733401C9875B5000928EC /* ATDefaultTrackerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CCE7333E1C9875B5000928EC /* ATDefaultTrackerDelegate.m */; };
+		CCE733411C9875B5000928EC /* ATDefaultTrackerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CCE7333E1C9875B5000928EC /* ATDefaultTrackerDelegate.m */; };
 		CCF171E91A8B4D9A005A43BA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCF171E81A8B4D9A005A43BA /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
@@ -435,6 +438,8 @@
 		CC91907B1A8CA50900B42293 /* ATBackgroundTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATBackgroundTask.m; sourceTree = "<group>"; };
 		CCCA059C1ADCFF09007EC6F3 /* ATSelfPromotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ATSelfPromotion.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CCCA059D1ADCFF09007EC6F3 /* ATSelfPromotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ATSelfPromotion.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		CCE7333D1C9875B5000928EC /* ATDefaultTrackerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATDefaultTrackerDelegate.h; sourceTree = "<group>"; };
+		CCE7333E1C9875B5000928EC /* ATDefaultTrackerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATDefaultTrackerDelegate.m; sourceTree = "<group>"; };
 		CCF171E31A8A6A8A005A43BA /* ATTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ATTool.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		CCF171E41A8A6A8A005A43BA /* ATTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ATTool.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CCF171E81A8B4D9A005A43BA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -680,6 +685,8 @@
 				AEA615521A44849700371DDE /* ATConfiguration.m */,
 				AE623E331AC58A9100E7DB3E /* ATContext.h */,
 				AE623E341AC58A9100E7DB3E /* ATContext.m */,
+				CCE7333D1C9875B5000928EC /* ATDefaultTrackerDelegate.h */,
+				CCE7333E1C9875B5000928EC /* ATDefaultTrackerDelegate.m */,
 				AE5B4F241AF9190000E446F3 /* ATDispatcher.h */,
 				AE5B4F251AF9190000E446F3 /* ATDispatcher.m */,
 				4F3DB50B1A88AE4B0000898F /* ATHit.h */,
@@ -813,6 +820,7 @@
 				AEEA4E5D1B32C96600F68EBD /* ATRichMedia.h in Headers */,
 				AE5B4F261AF9190000E446F3 /* ATDispatcher.h in Headers */,
 				4F3D7FD81AB6D299004C809E /* ATDebuggerWindow.h in Headers */,
+				CCE7333F1C9875B5000928EC /* ATDefaultTrackerDelegate.h in Headers */,
 				AEBF1BDA1AA5EAEC0008609A /* core.manifest.json in Headers */,
 				AEE288E71B0F2764009482C4 /* nuggad.manifest.json in Headers */,
 				AEE288E81B0F2764009482C4 /* tvtracking.manifest.json in Headers */,
@@ -1080,6 +1088,7 @@
 				AEDFEE8E1B259F1100756827 /* ATGesture.m in Sources */,
 				AEDFEE791B259E8000756827 /* ATStorage.m in Sources */,
 				AEDFEE861B259EF600756827 /* ATTVTrackingPlugin.m in Sources */,
+				CCE733411C9875B5000928EC /* ATDefaultTrackerDelegate.m in Sources */,
 				AEDFEE8D1B259F0E00756827 /* ATEvent.m in Sources */,
 				AEEA4E5A1B31CBF100F68EBD /* ATMediaPlayer.m in Sources */,
 				AEDFEE721B259E6500756827 /* ATDispatcher.m in Sources */,
@@ -1124,6 +1133,7 @@
 				AE3AD5451A93760A00816486 /* ATBackgroundTask.m in Sources */,
 				AE623E301AC5538600E7DB3E /* ATIdentifiedVisitor.m in Sources */,
 				CCCA059F1ADCFF09007EC6F3 /* ATSelfPromotion.m in Sources */,
+				CCE733401C9875B5000928EC /* ATDefaultTrackerDelegate.m in Sources */,
 				AE3AD5501A93760A00816486 /* ATParamOption.m in Sources */,
 				4F0482E61A8BA47B00A51B90 /* ATTracker.xcdatamodeld in Sources */,
 				AE5799231AFB8FC300C6F6D0 /* ATCustomVar.m in Sources */,

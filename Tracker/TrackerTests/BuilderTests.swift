@@ -64,11 +64,11 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
     }
     
     let tracker = ATTracker()
-    let configuration = ["log":"logp", "logSSL":"logs", "domain":"xiti.com", "pixelPath":"/hit.xiti", "site":"549808", "secure":"false", "identifier":"uuid"]
+    let conf = ["log":"logp", "logSSL":"logs", "domain":"xiti.com", "pixelPath":"/hit.xiti", "site":"549808", "secure":"false", "identifier":"uuid"]
     
     override func setUp() {
         super.setUp()
-        
+        tracker.setConfig(conf, override: false, completionHandler: nil)
         tracker.delegate = self
     }
     

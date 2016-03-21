@@ -42,5 +42,6 @@
 #import "../Tracker/ATLiveAudio.h"
 #import "../Tracker/ATInternet.h"
 #import "../Tracker/ATTechnicalContext.h"
+#import "../Tracker/ATDefaultTrackerDelegate.h"
 
 #endif
