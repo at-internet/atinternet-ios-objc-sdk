@@ -269,9 +269,6 @@ static NSDate* _timeInBackground = nil;
         // SessionId
         [self.parameters setObject:_sessionId forKey:@"sessionId"];
         
-        // SessionId
-        [self.parameters setObject:_sessionId forKey:@"sessionId"];
-        
         NSString *json = [ATTool JSONStringify:
                           [[NSDictionary alloc] initWithObjectsAndKeys:self.parameters, @"lifecycle", nil]
                                  prettyPrinted:NO];

@@ -127,7 +127,7 @@ typedef NS_ENUM(int, ATScreenAction) {
 /**
  Dynamic screen identifier
  */
-@property (nonatomic) int screenId;
+@property (nonatomic) NSString* screenId;
 
 /**
  Dynamic screen update date
@@ -219,7 +219,15 @@ typedef NS_ENUM(int, ATScreenAction) {
  @param name dynamic screen name
  @return the ATDynamicScreen instance
  */
-- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name;
+- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name __attribute((deprecated(("Use addWithStringId instead."))));
+
+/**
+ Add tagging data for a dynamic screen
+ @param update dynamic screen update
+ @param name dynamic screen name
+ @return the ATDynamicScreen instance
+ */
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name;
 
 /**
  Add tagging data for a dynamic screen
@@ -228,7 +236,16 @@ typedef NS_ENUM(int, ATScreenAction) {
  @param chapter1 dynamic screen chapter1
  @return the ATDynamicScreen instance
  */
-- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1;
+- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 __attribute((deprecated(("Use addWithStringId instead."))));
+
+/**
+ Add tagging data for a dynamic screen
+ @param update dynamic screen update
+ @param name dynamic screen name
+ @param chapter1 dynamic screen chapter1
+ @return the ATDynamicScreen instance
+ */
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1;
 
 /**
  Add tagging data for a dynamic screen
@@ -238,7 +255,17 @@ typedef NS_ENUM(int, ATScreenAction) {
  @param chapter2 dynamic screen chapter2
  @return the ATDynamicScreen instance
  */
-- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2;
+- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2 __attribute((deprecated(("Use addWithStringId instead."))));
+
+/**
+ Add tagging data for a dynamic screen
+ @param update dynamic screen update
+ @param name dynamic screen name
+ @param chapter1 dynamic screen chapter1
+ @param chapter2 dynamic screen chapter2
+ @return the ATDynamicScreen instance
+ */
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2;
 
 /**
  Add tagging data for a dynamic screen
@@ -249,7 +276,18 @@ typedef NS_ENUM(int, ATScreenAction) {
  @param chapter3 dynamic screen chapter3
  @return the ATDynamicScreen instance
  */
-- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2 chapter3:(NSString *)chapter3;
+- (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2 chapter3:(NSString *)chapter3 __attribute((deprecated(("Use addWithStringId instead."))));
+
+/**
+ Add tagging data for a dynamic screen
+ @param update dynamic screen update
+ @param name dynamic screen name
+ @param chapter1 dynamic screen chapter1
+ @param chapter2 dynamic screen chapter2
+ @param chapter3 dynamic screen chapter3
+ @return the ATDynamicScreen instance
+ */
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 chapter2:(NSString *)chapter2 chapter3:(NSString *)chapter3;
 
 /**
  ATDynamicScreens initializer

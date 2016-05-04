@@ -583,6 +583,11 @@ SOFTWARE.
             }
         }
         
+        // Referrer processing
+        if([parameter.key isEqualToString:@"ref"]){
+            value = [[[value stringByReplacingOccurrencesOfString:@"&" withString:@"$"] stringByReplacingOccurrencesOfString:@"<" withString:@""] stringByReplacingOccurrencesOfString:@">" withString:@""];
+        }
+        
         if(parameter.options) {
             if(parameter.options.encode) {
                 value = [value percentEncodedString];

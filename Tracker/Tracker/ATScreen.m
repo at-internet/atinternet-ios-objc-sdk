@@ -151,7 +151,16 @@ SOFTWARE.
     encodeOption.encode = YES;
     
     [self.tracker setStringParam:@"pchap" value:[self buildChapters] options:encodeOption];
-    [self.tracker setIntParam:@"pid" value:self.screenId];
+    
+    if([self.screenId length] > 255){
+        self.screenId = @"";
+        if(self.tracker.delegate){
+            if ([self.tracker.delegate respondsToSelector:@selector(warningDidOccur:)]) {
+                [self.tracker.delegate warningDidOccur:@"screenId too long, replaced by empty value"];
+            }
+        }
+    }
+    [self.tracker setStringParam:@"pid" value:self.screenId];
     
     self.dateFormatter.dateFormat = @"YYYYMMddHHmm";
     [self.tracker setStringParam:@"pidt" value:[self.dateFormatter stringFromDate:self.update]];
@@ -262,6 +271,17 @@ SOFTWARE.
 
 - (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name {
     ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
+    dScreen.screenId = [NSString stringWithFormat:@"%i", screenId];
+    dScreen.update = update;
+    dScreen.name = name;
+    
+    [self.tracker.businessObjects setObject:dScreen forKey:dScreen._id];
+    
+    return dScreen;
+}
+
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name {
+    ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
     dScreen.screenId = screenId;
     dScreen.update = update;
     dScreen.name = name;
@@ -272,6 +292,19 @@ SOFTWARE.
 }
 
 - (ATDynamicScreen *)addWithId:(int)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 {
+    ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
+    dScreen.screenId = [NSString stringWithFormat:@"%i", screenId];
+    dScreen.update = update;
+    dScreen.name = name;
+    dScreen.chapter1 = chapter1;
+    
+    [self.tracker.businessObjects setObject:dScreen forKey:dScreen._id];
+    
+    return dScreen;
+}
+
+
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId update:(NSDate *)update name:(NSString *)name chapter1:(NSString *)chapter1 {
     ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
     dScreen.screenId = screenId;
     dScreen.update = update;
@@ -288,6 +321,23 @@ SOFTWARE.
                     name:(NSString *)name
                 chapter1:(NSString *)chapter1
                 chapter2:(NSString *)chapter2 {
+    ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
+    dScreen.screenId = [NSString stringWithFormat:@"%i", screenId];
+    dScreen.update = update;
+    dScreen.name = name;
+    dScreen.chapter1 = chapter1;
+    dScreen.chapter2 = chapter2;
+    
+    [self.tracker.businessObjects setObject:dScreen forKey:dScreen._id];
+    
+    return dScreen;
+}
+
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId
+                        update:(NSDate *)update
+                          name:(NSString *)name
+                      chapter1:(NSString *)chapter1
+                      chapter2:(NSString *)chapter2 {
     ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
     dScreen.screenId = screenId;
     dScreen.update = update;
@@ -306,6 +356,25 @@ SOFTWARE.
                 chapter1:(NSString *)chapter1
                 chapter2:(NSString *)chapter2
                 chapter3:(NSString *)chapter3 {
+    ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
+    dScreen.screenId = [NSString stringWithFormat:@"%i", screenId];
+    dScreen.update = update;
+    dScreen.name = name;
+    dScreen.chapter1 = chapter1;
+    dScreen.chapter2 = chapter2;
+    dScreen.chapter3 = chapter3;
+    
+    [self.tracker.businessObjects setObject:dScreen forKey:dScreen._id];
+    
+    return dScreen;
+}
+
+- (ATDynamicScreen *)addWithStringId:(NSString *)screenId
+                        update:(NSDate *)update
+                          name:(NSString *)name
+                      chapter1:(NSString *)chapter1
+                      chapter2:(NSString *)chapter2
+                      chapter3:(NSString *)chapter3 {
     ATDynamicScreen *dScreen = [[ATDynamicScreen alloc] initWithTracker:self.tracker];
     dScreen.screenId = screenId;
     dScreen.update = update;

@@ -62,7 +62,7 @@ class CustomObjectTests: XCTestCase {
         
         XCTAssertEqual(stc.tracker.buffer.volatileParameters.count, 1, "Le nombre de paramètres volatiles doit être égal à 1")
         XCTAssert(stc.tracker.buffer.volatileParameters[0].key == "stc", "Le premier paramètre doit être stc")
-        XCTAssert(stc.tracker.buffer.volatileParameters[0].value!() == "{\"legume\":\"carotte\"}", "La valeur du premier paramètre doit être {\"legume\":\"carotte\"}")
+        XCTAssert((stc.tracker.buffer.volatileParameters[0] as! ATParam).value() == "{\"legume\":\"carotte\"}", "La valeur du premier paramètre doit être {\"legume\":\"carotte\"}")
     }
     
     func testAppendStringCustomObject() {

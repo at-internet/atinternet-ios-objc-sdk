@@ -113,7 +113,7 @@ class BufferTests: XCTestCase {
             if (tRefParam.key != tTestParam.key || tRefParam.value() != tTestParam.value()) {
                 testOK = false
             }
-            i++
+            i += 1
         }
         if (buffer.persistentParameters.count != arrayPer.count) {
             testOK = false
@@ -132,7 +132,7 @@ class BufferTests: XCTestCase {
             if (tRefParam.key != tTestParam.key || tRefParam.value() != tTestParam.value()) {
                 testOK = false
             }
-            i++
+            i += 1
         }
         if (buffer.volatileParameters.count != arrayVol.count) {
             testOK = false

@@ -38,7 +38,7 @@ class ContextTests: XCTestCase {
     let tracker = ATTracker()
     
     func testBackgroundMode() {
-        if (tracker.context.backgroundMode != ATBackgroundMode.Normal) {
+        if (tracker.context.backgroundMode != .Normal) {
             XCTAssertTrue(false, "Par défaut le mode background doit être à normal")
         }
         tracker.context.backgroundMode = .Fetch

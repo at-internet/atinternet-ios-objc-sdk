@@ -46,7 +46,7 @@ class AisleTests: XCTestCase {
         
         XCTAssertEqual(aisle.tracker.buffer.volatileParameters.count, 1, "Le nombre de paramètres volatiles doit être égal à 1")
         XCTAssert(aisle.tracker.buffer.volatileParameters[0].key == "aisl", "Le premier paramètre doit être aisle")
-        XCTAssert(aisle.tracker.buffer.volatileParameters[0].value!() == "Vêtement::Chaussures::Basket", "La valeur du premier paramètre doit être Vêtement::Chaussures::Basket")
+        XCTAssert((aisle.tracker.buffer.volatileParameters[0] as! ATParam).value() == "Vêtement::Chaussures::Basket", "La valeur du premier paramètre doit être Vêtement::Chaussures::Basket")
     }
     
     func testAddAisle() {

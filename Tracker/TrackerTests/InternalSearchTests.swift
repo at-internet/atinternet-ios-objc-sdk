@@ -47,13 +47,13 @@ class InternalSearchTests: XCTestCase {
         XCTAssertEqual(internalSearch.tracker.buffer.volatileParameters.count, 3, "Le nombre de paramètres volatiles doit être égal à 1")
         
         XCTAssert(internalSearch.tracker.buffer.volatileParameters[0].key == "mc", "Le premier paramètre doit être mc")
-        XCTAssert(internalSearch.tracker.buffer.volatileParameters[0].value!() == "watch", "La valeur du premier paramètre doit être watch")
+        XCTAssert((internalSearch.tracker.buffer.volatileParameters[0] as! ATParam).value() == "watch", "La valeur du premier paramètre doit être watch")
         
         XCTAssert(internalSearch.tracker.buffer.volatileParameters[1].key == "np", "Le premier paramètre doit être np")
-        XCTAssert(internalSearch.tracker.buffer.volatileParameters[1].value!() == "3", "La valeur du deuxième paramètre doit être 3")
+        XCTAssert((internalSearch.tracker.buffer.volatileParameters[1] as! ATParam).value() == "3", "La valeur du deuxième paramètre doit être 3")
         
         XCTAssert(internalSearch.tracker.buffer.volatileParameters[2].key == "mcrg", "Le premier paramètre doit être mcrg")
-        XCTAssert(internalSearch.tracker.buffer.volatileParameters[2].value!() == "1", "La valeur du troisième paramètre doit être 1")
+        XCTAssert((internalSearch.tracker.buffer.volatileParameters[2] as! ATParam).value() == "1", "La valeur du troisième paramètre doit être 1")
     }
     
     func testAddInternalSearchNoPosition() {

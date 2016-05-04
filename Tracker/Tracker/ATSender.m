@@ -1,25 +1,25 @@
 /*
-This SDK is licensed under the MIT license (MIT)
-Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+ This SDK is licensed under the MIT license (MIT)
+ Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 
 
@@ -97,6 +97,7 @@ static BOOL sentWithSuccess = NO;
         self.hit = hit;
         self.forceSendOfflineHits = forceSendOfflineHits;
         self.mhOlt = mhOlt;
+        self.retryCount = 3;
     }
     
     return self;
@@ -138,7 +139,7 @@ static BOOL sentWithSuccess = NO;
  */
 
 - (void)sendWithCompletionHandler:(void (^)(BOOL))completionHandler {
-    ATStorage *db = [[ATStorage alloc] init];
+    ATStorage *db = [ATStorage sharedInstance];
     
     // Si pas de connexion ou que le mode offline est à "always"
     if (([[self.tracker.configuration.parameters objectForKey:@"storage"] isEqualToString:@"always"] && self.forceSendOfflineHits == NO)
@@ -151,7 +152,7 @@ static BOOL sentWithSuccess = NO;
             // Si le hit ne provient pas du stockage offline, on le sauvegarde
             if (!self.hit.isOffline) {
                 NSString *pURL = self.hit.url;
-                ATStorage *storage = [[ATStorage alloc] init];
+                ATStorage *storage = [ATStorage sharedInstance];
                 if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
                     self.hit.url = pURL;
                     if (self.tracker.delegate) {
@@ -193,8 +194,8 @@ static BOOL sentWithSuccess = NO;
                 sessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
                 NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url
-                                                              cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                          timeoutInterval:30];
+                                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                                        timeoutInterval:30];
                 request.networkServiceType = NSURLNetworkServiceTypeBackground;
                 
                 NSURLSessionDataTask *task =
@@ -212,11 +213,10 @@ static BOOL sentWithSuccess = NO;
                                    // Si le hit ne provient pas du stockage offline,
                                    // on le sauvegarde si le mode offline est différent de "never"
                                    if (![[self.tracker.configuration.parameters objectForKey:@"storage"] isEqualToString:@"never"]) {
-                                       ATStorage *storage = [[ATStorage alloc] init];
+                                       ATStorage *storage = [ATStorage sharedInstance];
                                        
                                        if (!self.hit.isOffline) {
                                            NSString *pURL = self.hit.url;
-                                           ATStorage *storage = [[ATStorage alloc] init];
                                            if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
                                                self.hit.url = pURL;
                                                if (self.tracker.delegate) {
@@ -241,10 +241,9 @@ static BOOL sentWithSuccess = NO;
                                                }
                                            }
                                        } else {
-                                           ATStoredOfflineHit *offlineHit = [storage storedHit:self.hit.url];
-                                           if (offlineHit.retry.integerValue < self.retryCount) {
-                                               offlineHit.retry = [NSNumber numberWithInteger:(offlineHit.retry.integerValue + 1)];
-                                               [storage saveContext];
+                                           NSInteger retryCount = [storage getRetryCountForHit:self.hit.url];
+                                           if (retryCount < self.retryCount) {
+                                               [storage setRetryCount:retryCount+1 ForHit:self.hit.url];
                                            } else {
                                                [storage delete:self.hit.url];
                                            }
@@ -276,7 +275,7 @@ static BOOL sentWithSuccess = NO;
                                    // Si le hit provient du stockage et que l'envoi a réussi, on le supprime de la base
                                    if (self.hit.isOffline) {
                                        sentWithSuccess = YES;
-                                       ATStorage *storage = [[ATStorage alloc] init];
+                                       ATStorage *storage = [ATStorage sharedInstance];
                                        [storage delete:(self.hit.url)];
                                    }
                                    
@@ -308,7 +307,7 @@ static BOOL sentWithSuccess = NO;
             } else {
                 if (!self.hit.isOffline) {
                     NSString *pURL = self.hit.url;
-                    ATStorage *storage = [[ATStorage alloc] init];
+                    ATStorage *storage = [ATStorage sharedInstance];
                     if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
                         self.hit.url = pURL;
                         if (self.tracker.delegate) {
@@ -365,7 +364,7 @@ static BOOL sentWithSuccess = NO;
     
     if ((![[tracker.configuration.parameters objectForKey:@"storage"] isEqualToString:@"always"] || forceSendOfflineHits)
         && ([ATTechnicalContext connectionType] != ATConnectionTypeOffline)) {
-
+        
         
         if (!processing) {
             // Check wether offline hits are already being sent
@@ -390,7 +389,7 @@ static BOOL sentWithSuccess = NO;
                 
                 // If there's no offline hit being sent
                 
-                ATStorage *storage = [[ATStorage alloc] init];
+                ATStorage *storage = [ATStorage sharedInstance];
                 
                 // Check if offline hits exists in database
                 if ([storage count] > 0) {
@@ -425,7 +424,7 @@ static BOOL sentWithSuccess = NO;
                     }
                     
                 }
-
+                
             }
             
         }

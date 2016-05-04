@@ -51,19 +51,19 @@ class LocationTests: XCTestCase {
         
         XCTAssertEqual(locations.tracker.buffer.volatileParameters.count, 6, "Le nombre de paramètres volatiles doit être égal à 6")
         XCTAssert(locations.tracker.buffer.volatileParameters[0].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(locations.tracker.buffer.volatileParameters[0].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((locations.tracker.buffer.volatileParameters[0] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[1].key == "action", "Le second paramètre doit être action")
-        XCTAssert(location.tracker.buffer.volatileParameters[1].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((location.tracker.buffer.volatileParameters[1] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(locations.tracker.buffer.volatileParameters[2].value!() == "Home", "La valeur du troisième paramètre doit être Home")
+        XCTAssert((locations.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Home", "La valeur du troisième paramètre doit être Home")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[4].key == "gy", "Le 4ème paramètre doit être gy")
-        XCTAssert(locations.tracker.buffer.volatileParameters[4].value!() == "40.00", "La valeur du 4ème paramètre doit être 40")
+        XCTAssert((locations.tracker.buffer.volatileParameters[4] as! ATParam).value() == "40.00", "La valeur du 4ème paramètre doit être 40")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[5].key == "gx", "Le 5ème paramètre doit être gx")
-        XCTAssert(locations.tracker.buffer.volatileParameters[5].value!() == "50.00", "La valeur du 5ème paramètre doit être 50")
+        XCTAssert((locations.tracker.buffer.volatileParameters[5] as! ATParam).value() == "50.00", "La valeur du 5ème paramètre doit être 50")
     }
     
     func testSetLongLocation() {
@@ -74,19 +74,19 @@ class LocationTests: XCTestCase {
         
         XCTAssertEqual(locations.tracker.buffer.volatileParameters.count, 6, "Le nombre de paramètres volatiles doit être égal à 6")
         XCTAssert(locations.tracker.buffer.volatileParameters[0].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(locations.tracker.buffer.volatileParameters[0].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((locations.tracker.buffer.volatileParameters[0] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[1].key == "action", "Le second paramètre doit être action")
-        XCTAssert(locations.tracker.buffer.volatileParameters[1].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((locations.tracker.buffer.volatileParameters[1] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(locations.tracker.buffer.volatileParameters[2].value!() == "Home", "La valeur du troisième paramètre doit être Home")
+        XCTAssert((locations.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Home", "La valeur du troisième paramètre doit être Home")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[4].key == "gy", "Le 4ème paramètre doit être gy")
-        XCTAssert(locations.tracker.buffer.volatileParameters[4].value!() == "40.12", "La valeur du 4ème paramètre doit être 40.12")
+        XCTAssert((locations.tracker.buffer.volatileParameters[4] as! ATParam).value() == "40.12", "La valeur du 4ème paramètre doit être 40.12")
         
         XCTAssert(locations.tracker.buffer.volatileParameters[5].key == "gx", "Le 5ème paramètre doit être gx")
-        XCTAssert(locations.tracker.buffer.volatileParameters[5].value!() == "50.68", "La valeur du 5ème paramètre doit être 50.68")
+        XCTAssert((locations.tracker.buffer.volatileParameters[5] as! ATParam).value() == "50.68", "La valeur du 5ème paramètre doit être 50.68")
     }
 
 }
