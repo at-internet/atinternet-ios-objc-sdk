@@ -72,13 +72,13 @@ class ParameterTests: XCTestCase {
     // On vérifie que les paramètres key, value et relativeParameter ont bien été affectés
     func testParameterValuesAfterInitWithKeyAndValueAtFirstPosition() {
         let paramOptions = ATParamOption()
-        paramOptions.relativePosition = ATRelativePosition.First
+        paramOptions.relativePosition = .First
         
         let param = ATParam("p", value: {"Home"}, type: .String, options: paramOptions)
         
         XCTAssertEqual(param.key, "p", "le paramètre key doit être égal à p")
         XCTAssert(param.value() == "Home", "le paramètre value doit être égale à Home")
-        XCTAssert(param.options?.relativePosition == ATRelativePosition.First, "l'option relativePosition doit être égale à first")
+        XCTAssert(param.options?.relativePosition == .First, "l'option relativePosition doit être égale à first")
         XCTAssert(param.options?.relativeParameterKey == "", "l'option relativeParameter doit être égale à ''")
     }
     
@@ -86,13 +86,13 @@ class ParameterTests: XCTestCase {
     // On vérifie que si le paramètre a une position last, le relativeParameter est nil
     func testParameterValuesAfterInitWithKeyAndValueAtLastPosition() {
         let paramOptions = ATParamOption()
-        paramOptions.relativePosition = ATRelativePosition.Last
+        paramOptions.relativePosition = .Last
         
         let param = ATParam("p", value: {"Home"}, type: .String, options: paramOptions)
         
         XCTAssertEqual(param.key, "p", "le paramètre key doit être égal à p")
         XCTAssert(param.value() == "Home", "le paramètre value doit être égale à Home")
-        XCTAssert(param.options?.relativePosition == ATRelativePosition.Last, "l'option relativePosition doit être égale à last")
+        XCTAssert(param.options?.relativePosition == .Last, "l'option relativePosition doit être égale à last")
         XCTAssert(param.options?.relativeParameterKey == "", "l'option relativeParameter doit être égale à ''")
 
     }
@@ -100,28 +100,28 @@ class ParameterTests: XCTestCase {
     // On vérifie que les paramètres key, value et relativeParameter ont bien été affectés
     func testParameterValuesAfterInitWithKeyAndValueBeforeReferrerParameter() {
         let paramOptions = ATParamOption()
-        paramOptions.relativePosition = ATRelativePosition.Before
+        paramOptions.relativePosition = .Before
         paramOptions.relativeParameterKey = "ref"
         
         let param = ATParam("p", value: {"Home"}, type: .String, options: paramOptions)
         
         XCTAssertEqual(param.key, "p", "le paramètre key doit être égal à p")
         XCTAssert(param.value() == "Home", "le paramètre value doit être égale à Home")
-        XCTAssert(param.options?.relativePosition == ATRelativePosition.Before, "l'option relativePosition doit être égale à before")
+        XCTAssert(param.options?.relativePosition == .Before, "l'option relativePosition doit être égale à before")
         XCTAssert(param.options?.relativeParameterKey == "ref", "l'option relativeParameter doit être égale à 'ref'")
     }
     
     // On vérifie que les paramètres key, value et relativeParameter ont bien été affectés
     func testParameterValuesAfterInitWithKeyAndValueAfterXTCustomParameter() {
         let paramOptions = ATParamOption()
-        paramOptions.relativePosition = ATRelativePosition.After
+        paramOptions.relativePosition = .After
         paramOptions.relativeParameterKey = "stc"
         
         let param = ATParam("p", value: {"Home"}, type: .String, options: paramOptions)
         
         XCTAssertEqual(param.key, "p", "le paramètre key doit être égal à p")
         XCTAssert(param.value() == "Home", "le paramètre value doit être égale à Home")
-        XCTAssert(param.options?.relativePosition == ATRelativePosition.After, "l'option relativePosition doit être égale à after")
+        XCTAssert(param.options?.relativePosition == .After, "l'option relativePosition doit être égale à after")
         XCTAssert(param.options?.relativeParameterKey == "stc", "l'option relativeParameter doit être égale à 'stc'")
     }
     

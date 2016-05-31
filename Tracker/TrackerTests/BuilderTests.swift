@@ -89,8 +89,8 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         let today = getDate()
         
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
-        let hlParam = ATParam("date", value: {self.getDate()}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
+        let hlParam = ATParam("date", value: {self.getDate()}, type: .String)
         
         tracker.buffer.volatileParameters.addObject(pageParam)
         tracker.buffer.volatileParameters.addObject(hlParam)
@@ -123,7 +123,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         _ = getDate()
         
         let value = {ATTool.convertToString(3.1415, separator: nil).value}
-        let floatParam = ATParam("float", value: value, type: ATParamType.Float)
+        let floatParam = ATParam("float", value: value, type: .Float)
 
         tracker.buffer.volatileParameters.addObject(floatParam)
         
@@ -154,7 +154,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         _ = getDate()
         let value = {ATTool.convertToString(3, separator: nil).value}
-        let intParam = ATParam("int", value: value, type: ATParamType.Integer)
+        let intParam = ATParam("int", value: value, type: .Integer)
         
         tracker.buffer.volatileParameters.addObject(intParam)
         
@@ -187,8 +187,8 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
 
         let valueT = {ATTool.convertToString(true, separator: nil).value}
         let valueF = {ATTool.convertToString(false, separator: nil).value}
-        let trueBoolParam = ATParam("trueBool", value: valueT, type: ATParamType.Bool)
-        let falseBoolParam = ATParam("falseBool", value: valueF, type: ATParamType.Bool)
+        let trueBoolParam = ATParam("trueBool", value: valueT, type: .Bool)
+        let falseBoolParam = ATParam("falseBool", value: valueF, type: .Bool)
         
         tracker.buffer.volatileParameters.addObject(trueBoolParam)
         tracker.buffer.volatileParameters.addObject(falseBoolParam)
@@ -233,7 +233,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let value = {ATTool.convertToString(
             ["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]],
             separator: nil).value}
-        let dictParam = ATParam("json", value:value, type: ATParamType.JSON, options:option)
+        let dictParam = ATParam("json", value:value, type: .JSON, options:option)
 
         tracker.buffer.volatileParameters.addObject(dictParam)
         
@@ -264,7 +264,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         _ = getDate()
 
         let value = {ATTool.convertToString(["chou","patate","tomate","carotte"], separator: nil).value}
-        let arrayParam = ATParam("array", value: value, type: ATParamType.String)
+        let arrayParam = ATParam("array", value: value, type: .String)
         
         tracker.buffer.volatileParameters.addObject(arrayParam)
         
@@ -299,7 +299,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         arrayOption.separator = "|"
         
         let value = {ATTool.convertToString(["chou","patate","tomate","carotte"], separator: nil).value}
-        let arrayParam = ATParam("array", value: value, type: ATParamType.String, options:arrayOption)
+        let arrayParam = ATParam("array", value: value, type: .String, options:arrayOption)
         
         tracker.buffer.volatileParameters.addObject(arrayParam)
         
@@ -326,10 +326,11 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
     }
     
     // Teste l'envoi d'un hit
+    /*
     func testSendHit() {
         _ = [ATParam]()
         
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         
         let valueS = {ATTool.convertToString(
             ["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]],
@@ -341,23 +342,23 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let option = ATParamOption()
         option.encode = true
         
-        let stcParam = ATParam("stc", value: valueS, type: ATParamType.JSON, options:option)
-        let arrayParam = ATParam("array", value: valueA, type: ATParamType.String, options:option)
+        let stcParam = ATParam("stc", value: valueS, type: .JSON, options:option)
+        let arrayParam = ATParam("array", value: valueA, type: .String, options:option)
         
         let refParamOptions = ATParamOption()
-        refParamOptions.relativePosition = ATRelativePosition.Last
+        refParamOptions.relativePosition = .Last
 
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOptions)
+        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: .String, options: refParamOptions)
         
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         
         let crashParamOptions = ATParamOption()
-        crashParamOptions.relativePosition = ATRelativePosition.After
+        crashParamOptions.relativePosition = .After
         crashParamOptions.relativeParameterKey = "stc"
         
         let valueCrash = {ATTool.convertToString(false, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool, options: crashParamOptions)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool, options: crashParamOptions)
         
         tracker.buffer.volatileParameters.addObject(pageParam)
         tracker.buffer.volatileParameters.addObject(stcParam)
@@ -383,27 +384,27 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         })
         
         self.waitForExpectationsWithTimeout(5.0, handler: nil)
-    }
+    }*/
 
     // Teste que la méthode findParameterPosition retourne la bonne position du paramètre dans la collection
     func testFindParameterPosition() {
         var parameters = [ATParam]()
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         let value = {ATTool.convertToString(["chou", "patate", "carotte"], separator: nil).value}
-        let stcParam = ATParam("stc", value: value, type: ATParamType.String)
+        let stcParam = ATParam("stc", value: value, type: .String)
         let refParamOptions = ATParamOption()
-        refParamOptions.relativePosition = ATRelativePosition.Last
+        refParamOptions.relativePosition = .Last
         
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOptions)
+        let refParam = ATParam("ref", value: {"www.atinternet.com?test1=1&test2=2&test3=<script></script>"}, type: .String, options: refParamOptions)
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         let crashParamOptions = ATParamOption()
-        crashParamOptions.relativePosition = ATRelativePosition.After
+        crashParamOptions.relativePosition = .After
         crashParamOptions.relativeParameterKey = "stc"
         
         let valueCrash = {ATTool.convertToString(false, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool, options: crashParamOptions)
-        let hlParam = ATParam("hl", value: {self.getDate()}, type: ATParamType.String)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool, options: crashParamOptions)
+        let hlParam = ATParam("hl", value: {self.getDate()}, type: .String)
         
         parameters.append(pageParam)
         parameters.append(stcParam)
@@ -444,21 +445,21 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
     // Teste le formattage de paramètres volatiles
     func testPreQueryWithVolatileParameters() {
         _ = [ATParam]()
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         let valueStc = {ATTool.convertToString(["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]], separator: nil).value}
         
         let option = ATParamOption()
         option.encode = true
-        let stcParam = ATParam("stc", value: valueStc, type: ATParamType.String, options:option)
+        let stcParam = ATParam("stc", value: valueStc, type: .String, options:option)
         
         let refParamOption = ATParamOption()
-        refParamOption.relativePosition = ATRelativePosition.Last
+        refParamOption.relativePosition = .Last
         
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOption)
+        let refParam = ATParam("ref", value: {"www.atinternet.com?test1=1&test2=2&test3=<script></script>"}, type: .String, options: refParamOption)
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         let valueCrash = {ATTool.convertToString(false, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool)
         
         tracker.buffer.volatileParameters.addObject(pageParam)
         tracker.buffer.volatileParameters.addObject(stcParam)
@@ -477,27 +478,27 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
         XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
         XCTAssert(strings[17].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
-        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com?test1=1$test2=2$test3=script/script", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
     }
     
     // Teste le formattage de paramètres permanents
     func testPreQueryWithPersistentParameters() {
         _ = [ATParam]()
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         
         let valueStc = {ATTool.convertToString(["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]], separator: nil).value}
         let option = ATParamOption()
         option.encode = true
-        let stcParam = ATParam("stc", value: valueStc, type: ATParamType.String, options:option)
+        let stcParam = ATParam("stc", value: valueStc, type: .String, options:option)
         
         let refParamOption = ATParamOption()
-        refParamOption.relativePosition = ATRelativePosition.Last
+        refParamOption.relativePosition = .Last
         
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOption)
+        let refParam = ATParam("ref", value: {"www.atinternet.com?test1=1&test2=2&test3=<script></script>"}, type: .String, options: refParamOption)
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         let valueCrash = {ATTool.convertToString(true, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool)
         
         tracker.buffer.persistentParameters.addObject(pageParam)
         tracker.buffer.persistentParameters.addObject(stcParam)
@@ -516,26 +517,26 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
         XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
         XCTAssert(strings[17].str == "&crash=true", "le paramètre crash doit être égal à &crash=true")
-        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www%2Eatinternet%2Ecom et doit être le dernier paramètre")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com?test1=1$test2=2$test3=script/script", "le paramètre ref doit être égal à &ref=www%2Eatinternet%2Ecom et doit être le dernier paramètre")
     }
     
     // Teste le formattage de paramètres volatiles et persistents
     func testPreQueryWithPersistentAndVolatileParameters() {
         _ = [ATParam]()
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         let valueStc = {ATTool.convertToString(["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]], separator: nil).value}
         let option = ATParamOption()
         option.encode = true
-        let stcParam = ATParam("stc", value: valueStc, type: ATParamType.String, options:option)
+        let stcParam = ATParam("stc", value: valueStc, type: .String, options:option)
         
         let refParamOption = ATParamOption()
-        refParamOption.relativePosition = ATRelativePosition.Last
+        refParamOption.relativePosition = .Last
         
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOption)
+        let refParam = ATParam("ref", value: {"www.atinternet.com?test1=1&test2=2&test3=<script></script>"}, type: .String, options: refParamOption)
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         let valueCrash = {ATTool.convertToString(false, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool)
         
         tracker.buffer.persistentParameters.addObject(pageParam)
         tracker.buffer.persistentParameters.addObject(stcParam)
@@ -554,36 +555,36 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         /*XCTAssert(strings[14].str == "&stc=%7B%22fruits%22%3A%5B%22pomme%22%2C%22abricot%22%2C%22poire%22%5D%2C%22l%C3%A9gume%22%3A%5B%22chou%22%2C%22patate%22%2C%22tomate%22%2C%22carotte%22%5D%7D", "le second paramètre doit être égal à &stc=chou%2Cpatate%2Ccarotte")*/
         XCTAssert(strings[16].str == "&dslu=10", "le paramètre dslu doit être égal à &dslu=10")
         XCTAssert(strings[17].str == "&crash=false", "le paramètre crash doit être égal à &crash=false")
-        XCTAssert(strings[18].str == "&ref=www.atinternet.com", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
+        XCTAssert(strings[18].str == "&ref=www.atinternet.com?test1=1$test2=2$test3=script/script", "le paramètre ref doit être égal à &ref=www.atinternet.com et doit être le dernier paramètre")
     }
     
     func testOrganizeParameters() {
         _ = [ATParam]()
         
-        let pageParam = ATParam("p", value: {"home"}, type: ATParamType.String)
+        let pageParam = ATParam("p", value: {"home"}, type: .String)
         
         let valueStc = {ATTool.convertToString(["légume":["chou","patate","tomate","carotte"], "fruits": ["pomme", "abricot", "poire"]], separator: nil).value}
-        let stcParam = ATParam("stc", value: valueStc, type: ATParamType.JSON)
+        let stcParam = ATParam("stc", value: valueStc, type: .JSON)
         let valueArray = {ATTool.convertToString(["chou", "choux-fleur"], separator: nil).value}
-        let arrayParam = ATParam("array", value: valueArray, type: ATParamType.String)
+        let arrayParam = ATParam("array", value: valueArray, type: .String)
         
         let refParamOptions = ATParamOption()
-        refParamOptions.relativePosition = ATRelativePosition.Last
+        refParamOptions.relativePosition = .Last
         
-        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: ATParamType.String, options: refParamOptions)
+        let refParam = ATParam("ref", value: {"www.atinternet.com"}, type: .String, options: refParamOptions)
         let valueDslu = {ATTool.convertToString(10, separator: nil).value}
-        let dsluParam = ATParam("dslu", value: valueDslu, type: ATParamType.Integer)
+        let dsluParam = ATParam("dslu", value: valueDslu, type: .Integer)
         
         let crashParamOptions = ATParamOption()
-        crashParamOptions.relativePosition = ATRelativePosition.After
+        crashParamOptions.relativePosition = .After
         crashParamOptions.relativeParameterKey = "stc"
         
         let valueCrash = {ATTool.convertToString(false, separator: nil).value}
-        let crashParam = ATParam("crash", value: valueCrash, type: ATParamType.Bool, options: crashParamOptions)
+        let crashParam = ATParam("crash", value: valueCrash, type: .Bool, options: crashParamOptions)
         
         let hlParamOptions = ATParamOption()
         hlParamOptions.persistent = true
-        let hlParam = ATParam("hl", value: {self.getDate()}, type: ATParamType.String, options: hlParamOptions)
+        let hlParam = ATParam("hl", value: {self.getDate()}, type: .String, options: hlParamOptions)
         
         tracker.buffer.volatileParameters.addObject(pageParam)
         tracker.buffer.volatileParameters.addObject(stcParam)
@@ -618,7 +619,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         
         for i in 1...60 {
             let value = {ATTool.convertToString("bigvalue\(i)", separator: nil).value}
-            let param = ATParam("bigparameter\(i)", value: value, type: ATParamType.String)
+            let param = ATParam("bigparameter\(i)", value: value, type: .String)
             tracker.buffer.volatileParameters.addObject(param)
         }
         
@@ -649,7 +650,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         }
         
         let value = {ATTool.convertToString(array, separator: nil).value}
-        let param = ATParam("ati", value: value, type: ATParamType.String)
+        let param = ATParam("ati", value: value, type: .String)
         tracker.buffer.volatileParameters.addObject(param)
         let volPar = tracker.buffer.volatileParameters as [AnyObject]
         let perPar = tracker.buffer.persistentParameters as [AnyObject]
@@ -685,7 +686,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         json["key30"] = val
         
         let value = {ATTool.convertToString(json, separator: nil).value}
-        let param = ATParam("ati", value: value, type: ATParamType.JSON)
+        let param = ATParam("ati", value: value, type: .JSON)
         tracker.buffer.volatileParameters.addObject(param)
         let volPar = tracker.buffer.volatileParameters as [AnyObject]
         let perPar = tracker.buffer.persistentParameters as [AnyObject]
@@ -714,7 +715,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         }
         
         let value = {ATTool.convertToString(array, separator: nil).value}
-        let param = ATParam("var", value: value, type: ATParamType.String)
+        let param = ATParam("var", value: value, type: .String)
         tracker.buffer.volatileParameters.addObject(param)
         let volPar = tracker.buffer.volatileParameters as [AnyObject]
         let perPar = tracker.buffer.persistentParameters as [AnyObject]

@@ -1,25 +1,25 @@
 /*
-This SDK is licensed under the MIT license (MIT)
-Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+ This SDK is licensed under the MIT license (MIT)
+ Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 
 
@@ -50,6 +50,20 @@ SOFTWARE.
 @synthesize managedObjectContext = _managedObjectContext;
 
 NSString* entityName = @"ATStoredOfflineHit";
+
++ (id) sharedInstance {
+    static ATStorage *sharedStorage = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedStorage = [[self alloc] init];
+    });
+    return sharedStorage;
+}
+
+-(id)init {
+    self = [super init];
+    return self;
+}
 
 - (NSURL *)databaseDirectory {
     if(!_databaseDirectory) {
@@ -86,10 +100,16 @@ NSString* entityName = @"ATStoredOfflineHit";
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     if(!_persistentStoreCoordinator) {
         NSPersistentStoreCoordinator* coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
-        NSURL* url = [self.databaseDirectory URLByAppendingPathComponent:@"Tracker.sqlite"];
+        NSURL* url = self.databaseDirectory;
+        
+        NSError *error;
+        if (! [[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:&error]) {
+            NSLog(@"%@", error);
+        }
+        NSURL* sqliteURL = [url URLByAppendingPathComponent:@"Tracker.sqlite"];
         
         if(coordinator) {
-            if([coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:kNilOptions error:nil] == nil) {
+            if([coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:sqliteURL options:kNilOptions error:nil] == nil) {
                 _persistentStoreCoordinator = nil;
             } else {
                 _persistentStoreCoordinator = coordinator;
@@ -110,7 +130,7 @@ NSString* entityName = @"ATStoredOfflineHit";
             _managedObjectContext = nil;
         }
         
-        NSManagedObjectContext* managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        NSManagedObjectContext* managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         managedObjectContext.persistentStoreCoordinator = coordinator;
         _managedObjectContext = managedObjectContext;
     }
@@ -120,17 +140,35 @@ NSString* entityName = @"ATStoredOfflineHit";
 
 - (BOOL)saveContext {
     if(self.managedObjectContext) {
-        if(self.managedObjectContext.hasChanges && ![self.managedObjectContext save:nil]) {
-            return NO;
-        } else {
-            return YES;
-        }
+        __block BOOL done;
+        [self.managedObjectContext performBlockAndWait:^{
+            if(self.managedObjectContext.hasChanges){
+                done = [self.managedObjectContext save:nil];
+            } else {
+                done = NO;
+            }
+        }];
+        
+        return done;
+    } else {
+        return NO;
     }
-    
-    return NO;
+}
+
+- (void)saveToPersistentStore {
+    [self.managedObjectContext performBlockAndWait:^{
+        [self.managedObjectContext save:nil];
+    }];
+}
+
+- (NSManagedObjectContext *)newPrivateContext {
+    NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    privateContext.parentContext = self.managedObjectContext;
+    return privateContext;
 }
 
 - (BOOL)insertHit:(NSString **)hit mhOlt:(NSString *)mhOlt {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSDate* now = [NSDate date];
         NSString* olt;
@@ -144,11 +182,13 @@ NSString* entityName = @"ATStoredOfflineHit";
         *hit = [self buildHitToStore:*hit olt:olt];
         
         if([self exists:*hit] == NO) {
-            ATStoredOfflineHit* managedHit = (ATStoredOfflineHit *)[NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.managedObjectContext];
-            managedHit.hit = *hit;
-            managedHit.date = now;
-            managedHit.retry = 0;
-            
+            [privateContext performBlockAndWait:^{
+                ATStoredOfflineHit* managedHit = (ATStoredOfflineHit *)[NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:privateContext];
+                managedHit.hit = *hit;
+                managedHit.date = now;
+                managedHit.retry = 0;
+                [privateContext save:nil];
+            }];
             return [self saveContext];
         } else {
             return YES;
@@ -158,82 +198,138 @@ NSString* entityName = @"ATStoredOfflineHit";
     return NO;
 }
 
+- (void)setRetryCount:(NSInteger)count forOfflineHit:(NSManagedObjectID *)oid; {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    if(self.managedObjectContext && oid) {
+        [privateContext performBlockAndWait:^{
+            ATStoredOfflineHit *hit = [privateContext objectWithID:oid];
+            hit.retry = [NSNumber numberWithInteger:count];
+            [privateContext save:nil];
+            [self saveToPersistentStore];
+        }];
+    }
+}
+
+- (NSInteger)getRetryCountForHit:(NSString *)hit; {
+    NSManagedObjectID *offlineHitID = [self storedHit:hit];
+    return [self getRetryCount:offlineHitID];
+}
+
+- (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit {
+    NSManagedObjectID *offlineHitID = [self storedHit:hit];
+    [self setRetryCount:retryCount forOfflineHit:offlineHitID];
+}
+
+- (NSInteger) getRetryCount:(NSManagedObjectID *)oid {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    __block NSInteger retry = -1;
+    if(self.managedObjectContext && oid) {
+        [privateContext performBlockAndWait:^{
+            ATStoredOfflineHit *hit = [privateContext objectWithID:oid];
+            retry = hit.retry.integerValue;
+        }];
+    }
+    return retry;
+}
+
 - (NSArray *)hits {
     NSMutableArray* hits = [[NSMutableArray alloc] init];
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
         
-        if(storedHits) {
-            for(ATStoredOfflineHit *storedHit in storedHits) {
-                ATHit* hit = [[ATHit alloc] init];
-                hit.url = storedHit.hit;
-                hit.creationDate = storedHit.date;
-                hit.retryCount = storedHit.retry;
-                hit.offline = YES;
-                
-                [hits addObject:hit];
-            }
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
-            return hits;
-        }
+            if(storedHits) {
+                for(ATStoredOfflineHit *storedHit in storedHits) {
+                    ATHit* hit = [[ATHit alloc] init];
+                    hit.url = storedHit.hit;
+                    hit.creationDate = storedHit.date;
+                    hit.retryCount = storedHit.retry;
+                    hit.offline = YES;
+                    
+                    [hits addObject:hit];
+                }
+            }
+        }];
+        return hits;
+        
     }
     
     return hits;
 }
 
 - (ATHit *)hit:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
         request.predicate = filter;
+        __block ATHit* hit;
         
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
-        if(storedHits) {
-            if([storedHits count] > 0) {
-                ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
-                
-                ATHit* hit = [[ATHit alloc] init];
-                hit.url = storedHit.hit;
-                hit.creationDate = storedHit.date;
-                hit.retryCount = storedHit.retry;
-                hit.offline = YES;
-                
-                return hit;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
+            
+            if(storedHits) {
+                if([storedHits count] > 0) {
+                    ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
+                    
+                    hit = [[ATHit alloc] init];
+                    hit.url = storedHit.hit;
+                    hit.creationDate = storedHit.date;
+                    hit.retryCount = storedHit.retry;
+                    hit.offline = YES;
+                }
             }
-        }
+        }];
+        
+        return hit;
+        
     }
     
     return nil;
 }
 
+
+
 - (NSArray *)storedHits {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        __block NSArray* hits = [[NSArray alloc] init];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
+            
+            if(storedHits) {
+                hits = storedHits;
+            }
+        }];
+        return hits;
         
-        if(storedHits) {
-            return storedHits;
-        }
     }
     
     return [[NSArray alloc] init];
 }
 
-- (ATStoredOfflineHit *)storedHit:(NSString *)hit {
+- (NSManagedObjectID *)storedHit:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    __block ATStoredOfflineHit *storedHit;
+    __block NSArray* storedHits;
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
-        NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
-        request.predicate = filter;
-        
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
+        [privateContext performBlockAndWait:^{
+            NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
+            request.predicate = filter;
+            storedHits = [privateContext executeFetchRequest:request error:nil];
+        }];
         if(storedHits) {
             if([storedHits count] > 0) {
-                return (ATStoredOfflineHit *)storedHits[0];
+                storedHit = (ATStoredOfflineHit *)storedHits[0];
+                return storedHit.objectID;
             }
         }
     }
@@ -242,70 +338,88 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (NSInteger)count {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
         request.includesSubentities = NO;
         request.includesPropertyValues = NO;
         
-        NSInteger count = [self.managedObjectContext countForFetchRequest:request error:nil];
+        __block NSInteger result = -1;
+        [privateContext performBlockAndWait:^{
+            NSInteger count = [privateContext countForFetchRequest:request error:nil];
+            
+            if(count == NSNotFound) {
+                result = 0;
+            } else {
+                result = count;
+            }
+        }];
         
-        if(count == NSNotFound) {
-            return 0;
-        } else {
-            return count;
-        }
+        return result;
     }
     
     return 0;
 }
 
 - (BOOL)exists:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
         request.includesSubentities = NO;
         request.includesPropertyValues = NO;
         
-        NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
-        request.predicate = filter;
-
-        NSInteger count = [self.managedObjectContext countForFetchRequest:request error:nil];
-        
-        return (count > 0);
+        __block BOOL exists;
+        [privateContext performBlockAndWait:^{
+            NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
+            request.predicate = filter;
+            
+            NSInteger count = [privateContext countForFetchRequest:request error:nil];
+            exists = (count > 0);
+        }];
+        return exists;
     }
     
     return NO;
 }
 
 - (NSInteger)deleteAll {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
         request.includesSubentities = NO;
         request.includesPropertyValues = NO;
         
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
-        if(storedHits) {
-            for(ATStoredOfflineHit* storedHit in storedHits) {
-                [self.managedObjectContext deleteObject:storedHit];
-            }
+        __block NSInteger result = -2;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
-            if([self.managedObjectContext save:nil]) {
-                return [storedHits count];
+            if(storedHits) {
+                for(ATStoredOfflineHit* storedHit in storedHits) {
+                    [privateContext deleteObject:storedHit];
+                }
+                
+                if([privateContext save:nil]) {
+                    result = [storedHits count];
+                    [self saveToPersistentStore];
+                } else {
+                    result = -1;
+                }
             } else {
-                return -1;
+                result = 0;
             }
-        } else {
-            return 0;
-        }
+        }];
+        return result;
+        
     }
     
     return -1;
 }
 
 - (NSInteger)deleteFromDate:(NSDate *)olderThan {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -314,28 +428,35 @@ NSString* entityName = @"ATStoredOfflineHit";
         
         NSPredicate* filter = [NSPredicate predicateWithFormat:@"date < %@", olderThan];
         request.predicate = filter;
-
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
         
-        if(storedHits) {
-            for(ATStoredOfflineHit* storedHit in storedHits) {
-                [self.managedObjectContext deleteObject:storedHit];
-            }
+        __block NSInteger result = -2;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
-            if([self.managedObjectContext save:nil]) {
-                return [storedHits count];
+            if(storedHits) {
+                for(ATStoredOfflineHit* storedHit in storedHits) {
+                    [privateContext deleteObject:storedHit];
+                }
+                
+                if([privateContext save:nil]) {
+                    result = [storedHits count];
+                    [self saveToPersistentStore];
+                } else {
+                    result = -1;
+                }
             } else {
-                return -1;
+                result = 0;
             }
-        } else {
-            return 0;
-        }
+        }];
+        return result;
+        
     }
     
     return -1;
 }
 
 - (BOOL)delete:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -344,24 +465,29 @@ NSString* entityName = @"ATStoredOfflineHit";
         
         NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
         request.predicate = filter;
-        
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
-        if(storedHits) {
-            for(ATStoredOfflineHit* storedHit in storedHits) {
-                [self.managedObjectContext deleteObject:storedHit];
+        __block BOOL done;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
+            
+            if(storedHits) {
+                for(ATStoredOfflineHit* storedHit in storedHits) {
+                    [privateContext deleteObject:storedHit];
+                }
+                done = [privateContext save:nil];
+                done = done && [self saveContext];
                 
-                return [self.managedObjectContext save:nil];
+            } else {
+                done = NO;
             }
-        } else {
-            return NO;
-        }
+        }];
+        return done;
     }
     
     return NO;
 }
 
 - (ATHit *)first {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -369,53 +495,61 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.sortDescriptors = @[sortDescriptor];
         request.fetchLimit = 1;
         
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
-        if(storedHits) {
-            if([storedHits count] > 0) {
-                ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
-                
-                ATHit* hit = [[ATHit alloc] init];
-                hit.url = storedHit.hit;
-                hit.creationDate = storedHit.date;
-                hit.retryCount = storedHit.retry;
-                hit.offline = YES;
-                
-                return hit;
+        __block ATHit* hit;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
+            
+            if(storedHits) {
+                if([storedHits count] > 0) {
+                    ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
+                    
+                    ATHit* h = [[ATHit alloc] init];
+                    h.url = storedHit.hit;
+                    h.creationDate = storedHit.date;
+                    h.retryCount = storedHit.retry;
+                    h.offline = YES;
+                    
+                    hit = h;
+                }
             }
-        }
+        }];
+        return hit;
     }
     
     return nil;
 }
 
 - (ATHit *)last {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
         
         request.sortDescriptors = @[sortDescriptor];
         request.fetchLimit = 1;
-        
-        NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
-        
-        if(storedHits) {
-            if([storedHits count] > 0) {
-                ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
-                
-                ATHit* hit = [[ATHit alloc] init];
-                hit.url = storedHit.hit;
-                hit.creationDate = storedHit.date;
-                hit.retryCount = storedHit.retry;
-                hit.offline = YES;
-                
-                return hit;
+        __block ATHit *hit;
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
+            
+            if(storedHits) {
+                if([storedHits count] > 0) {
+                    ATStoredOfflineHit* storedHit = (ATStoredOfflineHit *) storedHits[0];
+                    
+                    ATHit* h = [[ATHit alloc] init];
+                    h.url = storedHit.hit;
+                    h.creationDate = storedHit.date;
+                    h.retryCount = storedHit.retry;
+                    h.offline = YES;
+                    
+                    hit = h;
+                }
             }
-        }
+        }];
+        return hit;
     }
     
     return nil;
-
+    
 }
 
 - (NSString *)buildHitToStore:(NSString *)hit olt:(NSString *)olt {

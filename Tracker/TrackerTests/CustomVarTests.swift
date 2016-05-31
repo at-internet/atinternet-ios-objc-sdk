@@ -41,41 +41,41 @@ class CustomVarTests: XCTestCase {
     func testSetCustomVarSite() {
         let screen = customVars.tracker.screens.addWithName("Home")
         screen.setEvent()
-        customVar = customVars.addWithId(123, value: "coucou", type: ATCustomVarType.App)
+        customVar = customVars.addWithId(123, value: "coucou", type: .App)
         customVar.setEvent()
         
         XCTAssertEqual(customVars.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         XCTAssert(customVars.tracker.buffer.volatileParameters[0].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[0].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[0] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[1].key == "action", "Le second paramètre doit être action")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[1].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[1] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[2].value!() == "Home", "La valeur du troisième paramètre doit être Home")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Home", "La valeur du troisième paramètre doit être Home")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[4].key == "x123", "Le 4ème paramètre doit être x123")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[4].value!() == "coucou", "La valeur du 4ème paramètre doit être coucou")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[4] as! ATParam).value() == "coucou", "La valeur du 4ème paramètre doit être coucou")
     }
     
     func testSetCustomVarPage() {
         let screen = customVars.tracker.screens.addWithName("Home")
         screen.setEvent()
-        customVar = customVars.addWithId(123, value: "coucou", type: ATCustomVarType.Screen)
+        customVar = customVars.addWithId(123, value: "coucou", type: .Screen)
         customVar.setEvent()
         
         XCTAssertEqual(customVars.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         XCTAssert(customVars.tracker.buffer.volatileParameters[0].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[0].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[0] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[1].key == "action", "Le second paramètre doit être action")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[1].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[1] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[2].value!() == "Home", "La valeur du troisième paramètre doit être Home")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Home", "La valeur du troisième paramètre doit être Home")
         
         XCTAssert(customVars.tracker.buffer.volatileParameters[4].key == "f123", "Le 4ème paramètre doit être f123")
-        XCTAssert(customVars.tracker.buffer.volatileParameters[4].value!() == "coucou", "La valeur du 4ème paramètre doit être coucou")
+        XCTAssert((customVars.tracker.buffer.volatileParameters[4] as! ATParam).value() == "coucou", "La valeur du 4ème paramètre doit être coucou")
     }
 
 }

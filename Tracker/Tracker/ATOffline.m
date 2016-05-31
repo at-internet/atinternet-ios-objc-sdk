@@ -49,44 +49,38 @@ SOFTWARE.
     [ATSender sendOfflineHits:self.tracker forceSendOfflineHits:YES];
 }
 - (NSArray *)get {
-    ATStorage *storage = [[ATStorage alloc] init];
-    return [storage hits];
+    return [[ATStorage sharedInstance] hits];
 }
 
 - (NSInteger)count {
-    ATStorage *storage = [[ATStorage alloc] init];
-    return [storage count];
+    return [[ATStorage sharedInstance] count];
     
 }
 
 - (NSInteger)delete {
-    ATStorage *storage = [[ATStorage alloc] init];
-    return [storage deleteAll];
+    return [[ATStorage sharedInstance] deleteAll];
 }
 
 - (NSInteger)deleteOlderThanDays:(NSInteger)days {
-    ATStorage *storage = [[ATStorage alloc] init];
-    
     NSDate* now = [NSDate date];
     NSDateComponents* dateComponent = [[NSDateComponents alloc] init];
     dateComponent.day = -days;
     
     NSDate* past =[[NSCalendar currentCalendar] dateByAddingComponents:dateComponent toDate:now options:kNilOptions];
     
-    return [storage deleteFromDate:past];
+    return [[ATStorage sharedInstance] deleteFromDate:past];
 }
 
 - (NSInteger)deleteOlderThanDate:(NSDate *)date {
-    ATStorage *storage = [[ATStorage alloc] init];
-    return [storage deleteFromDate:date];
+    return [[ATStorage sharedInstance] deleteFromDate:date];
 }
 
 - (ATHit *)oldest {
-    return [[[ATStorage alloc] init] first];
+    return [[ATStorage sharedInstance] first];
 }
 
 - (ATHit *)latest {
-    return [[[ATStorage alloc] init] last];
+    return [[ATStorage sharedInstance] last];
 }
 
 

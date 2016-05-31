@@ -57,16 +57,16 @@ class GestureTests: XCTestCase {
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "click", "Le premier paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "A", "La valeur du premier paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "A", "La valeur du premier paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "type", "Le second paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "click", "La valeur du second paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "click", "La valeur du second paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "action", "Le troisième paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "A", "La valeur du troisième paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "A", "La valeur du troisième paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Back", "La valeur du 4ème paramètre doit être Back")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Back", "La valeur du 4ème paramètre doit être Back")
     }
     
     func testSetGestureWithNameAndChapter() {
@@ -74,87 +74,87 @@ class GestureTests: XCTestCase {
         gesture.setEvent()
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Sport::Back", "La valeur du 4ème paramètre doit être Sport::Back")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Sport::Back", "La valeur du 4ème paramètre doit être Sport::Back")
     }
     
     func testSetNavigation() {
         gesture.name = "Back"
-        gesture.action = ATGestureAction.Navigate
+        gesture.action = .Navigate
         gesture.setEvent()
         
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "click", "Le premier paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "N", "La valeur du premier paramètre doit être N")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "N", "La valeur du premier paramètre doit être N")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "type", "Le second paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "click", "La valeur du second paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "click", "La valeur du second paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "action", "Le troisième paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "N", "La valeur du troisième paramètre doit être N")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "N", "La valeur du troisième paramètre doit être N")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Back", "La valeur du 4ème paramètre doit être Back")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Back", "La valeur du 4ème paramètre doit être Back")
     }
     
     func testSetDownload() {
         gesture.name = "Download"
-        gesture.action = ATGestureAction.Download
+        gesture.action = .Download
         gesture.setEvent()
         
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "click", "Le premier paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "T", "La valeur du premier paramètre doit être T")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "T", "La valeur du premier paramètre doit être T")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "type", "Le second paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "click", "La valeur du second paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "click", "La valeur du second paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "action", "Le troisième paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "T", "La valeur du troisième paramètre doit être T")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "T", "La valeur du troisième paramètre doit être T")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Download", "La valeur du 4ème paramètre doit être Download")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Download", "La valeur du 4ème paramètre doit être Download")
     }
     
     func testSetTouch() {
         gesture.name = "Touch"
-        gesture.action = ATGestureAction.Touch
+        gesture.action = .Touch
         gesture.setEvent()
         
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "click", "Le premier paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "A", "La valeur du premier paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "A", "La valeur du premier paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "type", "Le second paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "click", "La valeur du second paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "click", "La valeur du second paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "action", "Le troisième paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "A", "La valeur du troisième paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "A", "La valeur du troisième paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Touch", "La valeur du 4ème paramètre doit être Touch")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Touch", "La valeur du 4ème paramètre doit être Touch")
     }
     
     func testSetExit() {
         gesture.name = "Exit"
-        gesture.action = ATGestureAction.Exit
+        gesture.action = .Exit
         gesture.setEvent()
         
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 5, "Le nombre de paramètres volatiles doit être égal à 5")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "click", "Le premier paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "S", "La valeur du premier paramètre doit être S")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "S", "La valeur du premier paramètre doit être S")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "type", "Le second paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "click", "La valeur du second paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "click", "La valeur du second paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "action", "Le troisième paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "S", "La valeur du troisième paramètre doit être S")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "S", "La valeur du troisième paramètre doit être S")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "p", "Le 4ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "Exit", "La valeur du 4ème paramètre doit être Exit")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "Exit", "La valeur du 4ème paramètre doit être Exit")
     }
     
     func testAddGestureWithName() {
@@ -180,29 +180,29 @@ class GestureTests: XCTestCase {
         screen.sendView()
         
         gesture.name = "Touch"
-        gesture.action = ATGestureAction.Touch
+        gesture.action = .Touch
         gesture.setEvent()
         
         
         XCTAssertEqual(gesture.tracker.buffer.volatileParameters.count, 7, "Le nombre de paramètres volatiles doit être égal à 7")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[0].key == "pclick", "Le premier paramètre doit être pclick")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[0].value!() == "Home", "La valeur du premier paramètre doit être Home")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[0] as! ATParam).value() == "Home", "La valeur du premier paramètre doit être Home")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[1].key == "s2click", "Le 2nd paramètre doit être s2click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[1].value!() == "2", "La valeur du 2nd paramètre doit être 2")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[1] as! ATParam).value() == "2", "La valeur du 2nd paramètre doit être 2")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[2].key == "click", "Le troisième paramètre doit être click")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[2].value!() == "A", "La valeur du troisième paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[2] as! ATParam).value() == "A", "La valeur du troisième paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[3].key == "type", "Le 4ème paramètre doit être type")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[3].value!() == "click", "La valeur du 4ème paramètre doit être click")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[3] as! ATParam).value() == "click", "La valeur du 4ème paramètre doit être click")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[4].key == "action", "Le 5ème paramètre doit être action")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[4].value!() == "A", "La valeur du 5ème paramètre doit être A")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[4] as! ATParam).value() == "A", "La valeur du 5ème paramètre doit être A")
         
         XCTAssert(gesture.tracker.buffer.volatileParameters[5].key == "p", "Le 6ème paramètre doit être p")
-        XCTAssert(gesture.tracker.buffer.volatileParameters[5].value!() == "Touch", "La valeur du 6ème paramètre doit être Touch")
+        XCTAssert((gesture.tracker.buffer.volatileParameters[5] as! ATParam).value() == "Touch", "La valeur du 6ème paramètre doit être Touch")
     }
 
 }

@@ -72,27 +72,47 @@ class RichMediaSubclassTests: XCTestCase {
         
         XCTAssertEqual(video.player.tracker.buffer.volatileParameters.count, 11, "Le nombre de paramètres volatiles doit être égal à 11")
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "p", "Le paramètre doit être p")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "plyr", "Le paramètre doit être plyr")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "1", "La valeur du paramètre doit être 1")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "1", "La valeur du paramètre doit être 1")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "m6", "Le paramètre doit être m6")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "clip", "La valeur du paramètre doit être clip")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "clip", "La valeur du paramètre doit être clip")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "a", "Le paramètre doit être a")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "play", "La valeur du paramètre doit être play")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "play", "La valeur du paramètre doit être play")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "m5", "Le paramètre doit être m5")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "int", "La valeur du paramètre doit être int")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "int", "La valeur du paramètre doit être int")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "s2", "Le paramètre doit être s2")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "666", "La valeur du paramètre doit être 666")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "666", "La valeur du paramètre doit être 666")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "buf", "Le paramètre doit être buf")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "0", "La valeur du paramètre doit être 0")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "0", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "prich", "Le paramètre doit être prich")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "rock", "La valeur du paramètre doit être rock")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "rock", "La valeur du paramètre doit être rock")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "s2rich", "Le paramètre doit être s2rich")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "13", "La valeur du paramètre doit être 13")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "13", "La valeur du paramètre doit être 13")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "m1", "Le paramètre doit être m1")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "7", "La valeur du paramètre doit être 0")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "7", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "type", "Le paramètre doit être type")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "video", "La valeur du paramètre doit être video")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "video", "La valeur du paramètre doit être video")
 
     }
     
@@ -114,21 +134,35 @@ class RichMediaSubclassTests: XCTestCase {
         
         XCTAssertEqual(video.player.tracker.buffer.volatileParameters.count, 8, "Le nombre de paramètres volatiles doit être égal à 8")
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "p", "Le paramètre doit être p")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "plyr", "Le paramètre doit être plyr")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "1", "La valeur du paramètre doit être 1")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "1", "La valeur du paramètre doit être 1")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "m6", "Le paramètre doit être m6")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "live", "La valeur du paramètre doit être live")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "live", "La valeur du paramètre doit être live")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "a", "Le paramètre doit être a")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "play", "La valeur du paramètre doit être play")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "play", "La valeur du paramètre doit être play")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "m5", "Le paramètre doit être m5")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "int", "La valeur du paramètre doit être int")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "int", "La valeur du paramètre doit être int")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "s2", "Le paramètre doit être s2")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "666", "La valeur du paramètre doit être 666")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "666", "La valeur du paramètre doit être 666")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "buf", "Le paramètre doit être buf")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "0", "La valeur du paramètre doit être 0")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "0", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(video.tracker.buffer.volatileParameters[i].key == "type", "Le paramètre doit être type")
-        XCTAssert(video.tracker.buffer.volatileParameters[i++].value!() == "video", "La valeur du paramètre doit être video")
+        XCTAssert((video.tracker.buffer.volatileParameters[i] as! ATParam).value() == "video", "La valeur du paramètre doit être video")
 
     }
     
@@ -154,27 +188,47 @@ class RichMediaSubclassTests: XCTestCase {
         
         XCTAssertEqual(audio.player.tracker.buffer.volatileParameters.count, 11, "Le nombre de paramètres volatiles doit être égal à 11")
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "p", "Le paramètre doit être p")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "plyr", "Le paramètre doit être plyr")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "1", "La valeur du paramètre doit être 1")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "1", "La valeur du paramètre doit être 1")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "m6", "Le paramètre doit être m6")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "clip", "La valeur du paramètre doit être clip")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "clip", "La valeur du paramètre doit être clip")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "a", "Le paramètre doit être a")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "play", "La valeur du paramètre doit être play")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "play", "La valeur du paramètre doit être play")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "m5", "Le paramètre doit être m5")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "int", "La valeur du paramètre doit être int")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "int", "La valeur du paramètre doit être int")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "s2", "Le paramètre doit être s2")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "666", "La valeur du paramètre doit être 666")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "666", "La valeur du paramètre doit être 666")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "buf", "Le paramètre doit être buf")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "0", "La valeur du paramètre doit être 0")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "0", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "prich", "Le paramètre doit être prich")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "rock", "La valeur du paramètre doit être rock")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "rock", "La valeur du paramètre doit être rock")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "s2rich", "Le paramètre doit être s2rich")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "13", "La valeur du paramètre doit être 13")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "13", "La valeur du paramètre doit être 13")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "m1", "Le paramètre doit être m1")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "7", "La valeur du paramètre doit être 0")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "7", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "type", "Le paramètre doit être type")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "audio", "La valeur du paramètre doit être audio")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "audio", "La valeur du paramètre doit être audio")
     }
     
     func testSetLiveAudio() {
@@ -195,21 +249,35 @@ class RichMediaSubclassTests: XCTestCase {
         
         XCTAssertEqual(audio.player.tracker.buffer.volatileParameters.count, 8, "Le nombre de paramètres volatiles doit être égal à 8")
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "p", "Le paramètre doit être p")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!", "La valeur du paramètre doit être The Ramones::Blitzkrieg Bop::1976::Hey! Oh! Let's Go!")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "plyr", "Le paramètre doit être plyr")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "1", "La valeur du paramètre doit être 1")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "1", "La valeur du paramètre doit être 1")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "m6", "Le paramètre doit être m6")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "live", "La valeur du paramètre doit être live")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "live", "La valeur du paramètre doit être live")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "a", "Le paramètre doit être a")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "play", "La valeur du paramètre doit être play")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "play", "La valeur du paramètre doit être play")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "m5", "Le paramètre doit être m5")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "int", "La valeur du paramètre doit être int")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "int", "La valeur du paramètre doit être int")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "s2", "Le paramètre doit être s2")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "666", "La valeur du paramètre doit être 666")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "666", "La valeur du paramètre doit être 666")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "buf", "Le paramètre doit être buf")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "0", "La valeur du paramètre doit être 0")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "0", "La valeur du paramètre doit être 0")
+        i += 1;
+        
         XCTAssert(audio.tracker.buffer.volatileParameters[i].key == "type", "Le paramètre doit être type")
-        XCTAssert(audio.tracker.buffer.volatileParameters[i++].value!() == "audio", "La valeur du paramètre doit être audio")
+        XCTAssert((audio.tracker.buffer.volatileParameters[i] as! ATParam).value() == "audio", "La valeur du paramètre doit être audio")
     }
 
 }

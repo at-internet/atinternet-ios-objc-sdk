@@ -1,25 +1,25 @@
 /*
-This SDK is licensed under the MIT license (MIT)
-Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+ This SDK is licensed under the MIT license (MIT)
+ Copyright (c) 2015- Applied Technologies Internet SAS (registration number B 403 261 258 - Trade and Companies Register of Bordeaux – France)
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
 
 
 
@@ -56,6 +56,7 @@ SOFTWARE.
 @property (nonatomic, strong) NSDateFormatter *dateHourFormatter;
 @property (nonatomic, strong) NSBundle *bundle;
 @property (nonatomic, strong) ATStorage *storage;
+@property (nonatomic, strong) NSLayoutConstraint *previousConstraintForEvents;
 
 - (instancetype)init;
 - (void) initDebugger;
@@ -97,6 +98,7 @@ SOFTWARE.
                 
                 [self deinitDebugger];
                 [self initDebugger];
+                [self updateEventList];
             }
         } else {
             _viewController = viewController;
@@ -130,14 +132,18 @@ SOFTWARE.
         self.debugButtonPosition = @"Right";
         self.debuggerAnimating = NO;
         self.debuggerShown = NO;
-
+        
         self.windows = [[NSMutableArray alloc] init];
         self.receivedEvents = [[NSMutableArray alloc] init];
         
         NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
+        if(!bundlePath){
+            bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"];
+        }
+        
         self.bundle = [NSBundle bundleWithPath:bundlePath];
         
-        self.storage = [[ATStorage alloc] init];
+        self.storage = [ATStorage sharedInstance];
     }
     return self;
 }
@@ -175,19 +181,27 @@ SOFTWARE.
     
     [self.receivedEvents insertObject:event atIndex:0];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateEventList];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self addEventToList];
     });
-
+    
 }
 
 #pragma mark - Debug button
 
 - (void) createDebugButton {
     self.debugButton = [[UIButton alloc] init];
-
-    [self.debugButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/atinternet-logo.png"] forState:UIControlStateNormal];
-
+    
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
+    if(!bundlePath){
+        bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"];
+    }
+    NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
+    
+    UIImage* img = [UIImage imageWithContentsOfFile:[bundle pathForResource:@"atinternet-logo" ofType:@"png"]];
+    
+    [self.debugButton setBackgroundImage:img forState:UIControlStateNormal];
+    
     self.debugButton.frame = CGRectMake(0, 0, 94, 73);
     [self.debugButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.debugButton.alpha = 0;
@@ -216,14 +230,14 @@ SOFTWARE.
         [self.viewController.view addConstraint:self.debugButtonConstraint];
         
         [self.viewController.view addConstraint: [NSLayoutConstraint constraintWithItem:self.viewController.bottomLayoutGuide
-                                                                  attribute:NSLayoutAttributeTop
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.debugButton
-                                                                  attribute:NSLayoutAttributeBottom
-                                                                 multiplier:1.0f
-                                                                   constant:10]];
+                                                                              attribute:NSLayoutAttributeTop
+                                                                              relatedBy:NSLayoutRelationEqual
+                                                                                 toItem:self.debugButton
+                                                                              attribute:NSLayoutAttributeBottom
+                                                                             multiplier:1.0f
+                                                                               constant:10]];
         
-
+        
         
         [self.viewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[debugButton(==94)]"
                                                                                          options:0 metrics:nil
@@ -241,7 +255,7 @@ SOFTWARE.
                              self.debugButton.alpha = 1.0;
                          }
                          completion:nil];
-
+        
     }
 }
 
@@ -275,7 +289,7 @@ SOFTWARE.
                                                                                            attribute:NSLayoutAttributeLeading
                                                                                           multiplier:1.0f
                                                                                             constant:0];
-             
+                                 
                                  [self.viewController.view addConstraint:self.debugButtonConstraint];
                              }];
         } else {
@@ -302,7 +316,7 @@ SOFTWARE.
                                  
                                  [self.viewController.view addConstraint:self.debugButtonConstraint];
                              }];
-
+            
         }
     }
 }
@@ -364,7 +378,7 @@ SOFTWARE.
                                                   for(int i = 0; i < [self.windows count]; i++) {
                                                       ((ATDebuggerWindow *)self.windows[i]).content.alpha = 1.0f;
                                                       ((ATDebuggerWindow *)self.windows[i]).menu.alpha = 1.0f;
-
+                                                      
                                                   }
                                               }
                                               completion:nil];
@@ -388,9 +402,9 @@ SOFTWARE.
     
     UIButton* offlineButton = [[UIButton alloc] init];
     [offlineButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [offlineButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/database64"] forState:UIControlStateNormal];
+    [offlineButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"database64" ofType:@"png"]] forState:UIControlStateNormal];
     [offlineButton addTarget:self action:@selector(createOfflineHitsViewer) forControlEvents:UIControlEventTouchUpInside];
-
+    
     [eventViewer.menu addSubview:offlineButton];
     
     [eventViewer.menu addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[offlineButton(==32)]"
@@ -438,7 +452,7 @@ SOFTWARE.
     [trashButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [eventViewer.menu addSubview:trashButton];
     
-    [trashButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/trash64"] forState:UIControlStateNormal];
+    [trashButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"trash64" ofType:@"png"]] forState:UIControlStateNormal];
     [trashButton addTarget:self action:@selector(trashEvents) forControlEvents:UIControlEventTouchUpInside];
     
     [eventViewer.menu addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[trashButton(==32)]"
@@ -479,6 +493,10 @@ SOFTWARE.
     NSArray* emptyEventList = [eventViewer.content.subviews filteredArrayUsingPredicate:emptyEventListPredicate];
     
     if([scrollViews count] > 0) {
+        for (UIView *row in [scrollViews[0] subviews]) {
+            row.tag = 9999;
+            [row removeFromSuperview];
+        }
         [scrollViews[0] removeFromSuperview];
     }
     
@@ -491,6 +509,7 @@ SOFTWARE.
     scrollView.showsVerticalScrollIndicator = YES;
     scrollView.scrollEnabled = YES;
     scrollView.userInteractionEnabled = YES;
+    scrollView.tag = -100;
     
     [eventViewer.content addSubview:scrollView];
     
@@ -525,8 +544,6 @@ SOFTWARE.
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0f
                                                                       constant:0.0f]];
-    
-    UIView* previousRow;
     
     if([self.receivedEvents count] == 0) {
         UIView* emptyContentView = [[UIView alloc] init];
@@ -577,210 +594,224 @@ SOFTWARE.
                                                                      multiplier:1.0f
                                                                        constant:0.0f]];
     } else {
+        self.previousConstraintForEvents = nil;
         int i = 0;
-        
+        UIView *previous = nil;
         for(ATDebuggerEvent* event in self.receivedEvents) {
-            UIView* rowView = [[UIView alloc] init];
-            [rowView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            rowView.userInteractionEnabled = YES;
-            rowView.tag = i;
-            
-            [rowView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(eventRowSelected:)]];
-            
-            [scrollView addSubview:rowView];
-            
-            [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[rowView]-0-|"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"rowView": rowView}]];
-            
-            if(i == 0) {
-                [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
-                                                                        attribute:NSLayoutAttributeTop
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:scrollView
-                                                                        attribute:NSLayoutAttributeTop
-                                                                       multiplier:1.0f
-                                                                         constant:0.0f]];
-                
-                [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:scrollView
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                       multiplier:1.0f
-                                                                         constant:0.0f]];
-            } else {
-                [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
-                                                                        attribute:NSLayoutAttributeTop
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:previousRow
-                                                                        attribute:NSLayoutAttributeBottom
-                                                                       multiplier:1.0f
-                                                                         constant:0.0f]];
-            }
-            
-            if(i % 2 == 0) {
-                rowView.backgroundColor = [UIColor colorWithRed:214/255.0f green:214/255.0f blue:214/255.0f alpha:1];
-            } else {
-                rowView.backgroundColor = [UIColor whiteColor];
-            }
-            
-            if(i == [self.receivedEvents count] - 1) {
-                [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
-                                                                        attribute:NSLayoutAttributeBottom
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:scrollView
-                                                                        attribute:NSLayoutAttributeBottom
-                                                                       multiplier:1.0f
-                                                                         constant:0.0f]];
-            }
-            
-            UIImageView* iconView = [[UIImageView alloc] init];
-            UILabel* dateLabel = [[UILabel alloc] init];
-            UILabel* messageLabel = [[UILabel alloc] init];
-            UIImageView* hitTypeView = [[UIImageView alloc] init];
-            
-            [iconView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [messageLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [hitTypeView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            
-            [rowView addSubview:iconView];
-            [rowView addSubview:dateLabel];
-            [rowView addSubview:messageLabel];
-            [rowView addSubview:hitTypeView];
-            
-            iconView.image = [UIImage imageNamed:[NSString stringWithFormat:@"ATAssets.bundle/%@", event.type]];
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:iconView
-                                                                    attribute:NSLayoutAttributeLeft
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:rowView
-                                                                    attribute:NSLayoutAttributeLeft
-                                                                   multiplier:1.0f
-                                                                     constant:5.0f]];
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:iconView
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:rowView
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                multiplier:1.0f
-                                                                  constant:-1.0f]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[iconView(==24)]"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"iconView": iconView}]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[iconView(==24)]"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"iconView": iconView}]];
-            
-            dateLabel.text = [self.hourFormatter stringFromDate:event.date];
-            [dateLabel sizeToFit];
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:dateLabel
-                                                                 attribute:NSLayoutAttributeLeft
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:iconView
-                                                                 attribute:NSLayoutAttributeRight
-                                                                multiplier:1.0f
-                                                                  constant:5.0f]];
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:dateLabel
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:rowView
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                multiplier:1.0f
-                                                                  constant:0.0f]];
-            
-            messageLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-            messageLabel.baselineAdjustment = UIBaselineAdjustmentNone;
-            messageLabel.text = event.message;
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:messageLabel
-                                                                 attribute:NSLayoutAttributeLeft
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:dateLabel
-                                                                 attribute:NSLayoutAttributeRight
-                                                                multiplier:1.0f
-                                                                  constant:10.0f]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[messageLabel]-12-|"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"messageLabel": messageLabel}]];
-            
-            NSURL* URL = [[NSURL alloc] initWithString:event.message];
-            
-            if(URL) {
-                hitTypeView.hidden = NO;
-                
-                ATHit* hit = [[ATHit alloc] init:URL.absoluteString];
-                
-                switch([hit hitType]) {
-                    case ATHitTypeTouch:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/touch48"];
-                        break;
-                    case ATHitTypeAdTracking:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/tv48"];
-                        break;
-                    case ATHitTypeAudio:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/audio48"];
-                        break;
-                    case ATHitTypeVideo:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/video48"];
-                        break;
-                    case ATHitTypeProductDisplay:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/product48"];
-                        break;
-                    default:
-                        hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/smartphone48"];
-                        break;
-                }
-            } else {
-                hitTypeView.hidden = YES;
-            }
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:hitTypeView
-                                                                 attribute:NSLayoutAttributeLeft
-                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                    toItem:messageLabel
-                                                                 attribute:NSLayoutAttributeRight
-                                                                multiplier:1.0f
-                                                                  constant:10.0f]];
-            
-            [rowView addConstraint: [NSLayoutConstraint constraintWithItem:hitTypeView
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:messageLabel
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                multiplier:1.0f
-                                                                  constant:-1.0f]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[hitTypeView(==24)]"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"hitTypeView": hitTypeView}]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hitTypeView(==24)]"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"hitTypeView": hitTypeView}]];
-            
-            [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[hitTypeView]-5-|"
-                                                                            options:0 metrics:nil
-                                                                              views:@{@"hitTypeView": hitTypeView}]];
-            
-            previousRow = rowView;
-            
-            i++;
+            previous = [self buildEventRow:event withTag:i usingScrollView:scrollView andPreviousRow:previous];
+            i += 1;
         }
     }
+}
+
+- (UIView *) buildEventRow:(ATDebuggerEvent *)event withTag:(NSInteger)tag usingScrollView:(UIScrollView*) scrollView andPreviousRow: (UIView *)previousRow {
+    UIView* rowView = [[UIView alloc] init];
+    [rowView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    rowView.userInteractionEnabled = YES;
+    rowView.tag = tag;
+    
+    [rowView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(eventRowSelected:)]];
+    
+    [scrollView addSubview:rowView];
+    
+    [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[rowView]-0-|"
+                                                                       options:0 metrics:nil
+                                                                         views:@{@"rowView": rowView}]];
+    
+    if(tag == 0) {
+        [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
+                                                                attribute:NSLayoutAttributeTop
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:scrollView
+                                                                attribute:NSLayoutAttributeTop
+                                                               multiplier:1.0f
+                                                                 constant:0.0f]];
+        
+        [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
+                                                                attribute:NSLayoutAttributeCenterX
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:scrollView
+                                                                attribute:NSLayoutAttributeCenterX
+                                                               multiplier:1.0f
+                                                                 constant:0.0f]];
+    } else {
+        [scrollView addConstraint: [NSLayoutConstraint constraintWithItem:rowView
+                                                                attribute:NSLayoutAttributeTop
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:previousRow
+                                                                attribute:NSLayoutAttributeBottom
+                                                               multiplier:1.0f
+                                                                 constant:0.0f]];
+    }
+    
+    if(tag % 2 == 0) {
+        rowView.backgroundColor = [UIColor colorWithRed:214/255.0f green:214/255.0f blue:214/255.0f alpha:1];
+    } else {
+        rowView.backgroundColor = [UIColor whiteColor];
+    }
+    
+    if(tag == [self.receivedEvents count] - 1) {
+        if (self.previousConstraintForEvents) {
+            [scrollView removeConstraint:self.previousConstraintForEvents];
+        }
+        self.previousConstraintForEvents = [NSLayoutConstraint constraintWithItem:rowView
+                                                                        attribute:NSLayoutAttributeBottom
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:scrollView
+                                                                        attribute:NSLayoutAttributeBottom
+                                                                       multiplier:1.0f
+                                                                         constant:0.0f];
+        [scrollView addConstraint: self.previousConstraintForEvents];
+    }
+    
+    UIImageView* iconView = [[UIImageView alloc] init];
+    UILabel* dateLabel = [[UILabel alloc] init];
+    UILabel* messageLabel = [[UILabel alloc] init];
+    UIImageView* hitTypeView = [[UIImageView alloc] init];
+    
+    [iconView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [messageLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [hitTypeView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [rowView addSubview:iconView];
+    [rowView addSubview:dateLabel];
+    [rowView addSubview:messageLabel];
+    [rowView addSubview:hitTypeView];
+    iconView.image =[UIImage imageWithContentsOfFile:[self.bundle pathForResource:[NSString stringWithFormat:@"%@", event.type] ofType:@"png"]];
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:iconView
+                                                         attribute:NSLayoutAttributeLeft
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:rowView
+                                                         attribute:NSLayoutAttributeLeft
+                                                        multiplier:1.0f
+                                                          constant:5.0f]];
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:iconView
+                                                         attribute:NSLayoutAttributeCenterY
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:rowView
+                                                         attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1.0f
+                                                          constant:-1.0f]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[iconView(==24)]"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"iconView": iconView}]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[iconView(==24)]"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"iconView": iconView}]];
+    
+    dateLabel.text = [self.hourFormatter stringFromDate:event.date];
+    [dateLabel sizeToFit];
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:dateLabel
+                                                         attribute:NSLayoutAttributeLeft
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:iconView
+                                                         attribute:NSLayoutAttributeRight
+                                                        multiplier:1.0f
+                                                          constant:5.0f]];
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:dateLabel
+                                                         attribute:NSLayoutAttributeCenterY
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:rowView
+                                                         attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1.0f
+                                                          constant:0.0f]];
+    
+    messageLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    messageLabel.baselineAdjustment = UIBaselineAdjustmentNone;
+    messageLabel.text = event.message;
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:messageLabel
+                                                         attribute:NSLayoutAttributeLeft
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:dateLabel
+                                                         attribute:NSLayoutAttributeRight
+                                                        multiplier:1.0f
+                                                          constant:10.0f]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[messageLabel]-12-|"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"messageLabel": messageLabel}]];
+    
+    NSURL* URL = [[NSURL alloc] initWithString:event.message];
+    
+    if(URL) {
+        hitTypeView.hidden = NO;
+        
+        ATHit* hit = [[ATHit alloc] init:URL.absoluteString];
+        
+        switch([hit hitType]) {
+            case ATHitTypeTouch:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/touch48"];
+                break;
+            case ATHitTypeAdTracking:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/tv48"];
+                break;
+            case ATHitTypeAudio:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/audio48"];
+                break;
+            case ATHitTypeVideo:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/video48"];
+                break;
+            case ATHitTypeProductDisplay:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/product48"];
+                break;
+            default:
+                hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/smartphone48"];
+                break;
+        }
+    } else {
+        hitTypeView.hidden = YES;
+    }
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:hitTypeView
+                                                         attribute:NSLayoutAttributeLeft
+                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                            toItem:messageLabel
+                                                         attribute:NSLayoutAttributeRight
+                                                        multiplier:1.0f
+                                                          constant:10.0f]];
+    
+    [rowView addConstraint: [NSLayoutConstraint constraintWithItem:hitTypeView
+                                                         attribute:NSLayoutAttributeCenterY
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:messageLabel
+                                                         attribute:NSLayoutAttributeCenterY
+                                                        multiplier:1.0f
+                                                          constant:-1.0f]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[hitTypeView(==24)]"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"hitTypeView": hitTypeView}]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hitTypeView(==24)]"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"hitTypeView": hitTypeView}]];
+    
+    [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[hitTypeView]-5-|"
+                                                                    options:0 metrics:nil
+                                                                      views:@{@"hitTypeView": hitTypeView}]];
+    
+    return rowView;
 }
 
 - (void) updateEventList {
     ATDebuggerWindow* window =  (ATDebuggerWindow *)self.windows[0];
     
     [self getEventsList:window];
+}
+
+- (void) addEventToList {
+    ATDebuggerWindow* window =  (ATDebuggerWindow *)self.windows[0];
+    [[window.content viewWithTag:-2] removeFromSuperview];
+    UIScrollView *scrollView = [window.content viewWithTag:-100];
+    [self buildEventRow:self.receivedEvents[self.receivedEvents.count - 1] withTag:(self.receivedEvents.count - 1) usingScrollView:scrollView andPreviousRow:[scrollView viewWithTag:(self.receivedEvents.count-2)]];
 }
 
 - (void) eventRowSelected:(UIPanGestureRecognizer *)recogniser {
@@ -811,7 +842,7 @@ SOFTWARE.
     [backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [eventDetail.menu addSubview:backButton];
     
-    [backButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/back64"] forState:UIControlStateNormal];
+    [backButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"back64" ofType:@"png"]] forState:UIControlStateNormal];
     backButton.tag = [self.windows count] - 1;
     [backButton addTarget:self action:@selector(backButtonWasTouched:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -1059,6 +1090,41 @@ SOFTWARE.
             
             i++;
         }
+    } else {
+        eventDetail.windowTitle = @"Event Detail";
+        _windowTitleLabel.text = eventDetail.windowTitle;
+        UILabel *eventMessageLabel = [[UILabel alloc] init];
+        eventMessageLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        eventMessageLabel.text = hit;
+        eventMessageLabel.textAlignment = NSTextAlignmentLeft;
+        eventMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        eventMessageLabel.numberOfLines = 0;
+        [scrollView addSubview:eventMessageLabel];
+        [scrollView addConstraint:[NSLayoutConstraint constraintWithItem:eventMessageLabel
+                                                               attribute:NSLayoutAttributeLeading
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:scrollView
+                                                               attribute:NSLayoutAttributeLeading
+                                                              multiplier:1.0
+                                                                constant:10]];
+        [scrollView addConstraint:[NSLayoutConstraint constraintWithItem:eventMessageLabel
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:scrollView
+                                                               attribute:NSLayoutAttributeTrailing
+                                                              multiplier:1.0
+                                                                constant:10]];
+        [scrollView addConstraint:[NSLayoutConstraint constraintWithItem:eventMessageLabel
+                                                               attribute:NSLayoutAttributeCenterX
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:scrollView
+                                                               attribute:NSLayoutAttributeCenterX
+                                                              multiplier:1.0
+                                                                constant:10]];
+        [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[eventMessageLabel]-10-|"
+                                                                           options:NSLayoutFormatAlignAllLeft
+                                                                           metrics:nil
+                                                                             views:@{@"eventMessageLabel":eventMessageLabel}]];
     }
     
     return eventDetail.window;
@@ -1078,7 +1144,7 @@ SOFTWARE.
     [backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [offlineHits.menu addSubview:backButton];
     
-    [backButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/back64"] forState:UIControlStateNormal];
+    [backButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"back64" ofType:@"png"]] forState:UIControlStateNormal];
     backButton.tag = [self.windows count] - 1;
     [backButton addTarget:self action:@selector(backButtonWasTouched:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -1106,7 +1172,7 @@ SOFTWARE.
     [trashButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [offlineHits.menu addSubview:trashButton];
     
-    [trashButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/trash64"] forState:UIControlStateNormal];
+    [trashButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"trash64" ofType:@"png"]] forState:UIControlStateNormal];
     [trashButton addTarget:self action:@selector(trashOfflineHits) forControlEvents:UIControlEventTouchUpInside];
     
     [offlineHits.menu addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[trashButton(==32)]"
@@ -1128,12 +1194,12 @@ SOFTWARE.
                                                                   attribute:NSLayoutAttributeCenterY
                                                                  multiplier:1.0f
                                                                    constant:0.0f]];
-
+    
     UIButton* refreshButton = [[UIButton alloc] init];
     [refreshButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [offlineHits.menu addSubview:refreshButton];
     
-    [refreshButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/refresh64"] forState:UIControlStateNormal];
+    [refreshButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"refresh64" ofType:@"png"]] forState:UIControlStateNormal];
     [refreshButton addTarget:self action:@selector(refreshOfflineHits) forControlEvents:UIControlEventTouchUpInside];
     
     [offlineHits.menu addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[refreshButton(==32)]"
@@ -1143,7 +1209,7 @@ SOFTWARE.
     [offlineHits.menu addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[refreshButton(==32)]"
                                                                              options:0 metrics:nil
                                                                                views:@{@"refreshButton": refreshButton}]];
-
+    
     [offlineHits.menu addConstraint: [NSLayoutConstraint constraintWithItem:trashButton
                                                                   attribute:NSLayoutAttributeLeading
                                                                   relatedBy:NSLayoutRelationEqual
@@ -1272,20 +1338,20 @@ SOFTWARE.
         [noOfflineHitsView addSubview:emptyContentLabel];
         
         [noOfflineHitsView addConstraint: [NSLayoutConstraint constraintWithItem:emptyContentLabel
-                                                                      attribute:NSLayoutAttributeCenterY
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:noOfflineHitsView
-                                                                      attribute:NSLayoutAttributeCenterY
-                                                                     multiplier:1.0f
-                                                                       constant:0.0f]];
+                                                                       attribute:NSLayoutAttributeCenterY
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:noOfflineHitsView
+                                                                       attribute:NSLayoutAttributeCenterY
+                                                                      multiplier:1.0f
+                                                                        constant:0.0f]];
         
         [noOfflineHitsView addConstraint: [NSLayoutConstraint constraintWithItem:emptyContentLabel
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                      relatedBy:NSLayoutRelationEqual
-                                                                         toItem:noOfflineHitsView
-                                                                      attribute:NSLayoutAttributeCenterX
-                                                                     multiplier:1.0f
-                                                                       constant:0.0f]];
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:noOfflineHitsView
+                                                                       attribute:NSLayoutAttributeCenterX
+                                                                      multiplier:1.0f
+                                                                        constant:0.0f]];
     } else {
         int i = 0;
         
@@ -1350,12 +1416,12 @@ SOFTWARE.
             UILabel* messageLabel = [[UILabel alloc] init];
             UIImageView* hitTypeView = [[UIImageView alloc] init];
             UIButton* deleteButton = [[UIButton alloc] init];
-
+            
             [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
             [messageLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
             [hitTypeView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [deleteButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-
+            
             [rowView addSubview:dateLabel];
             [rowView addSubview:messageLabel];
             [rowView addSubview:hitTypeView];
@@ -1398,22 +1464,22 @@ SOFTWARE.
             
             switch([hit hitType]) {
                 case ATHitTypeTouch:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/touch48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"touch48" ofType:@"png"]];
                     break;
                 case ATHitTypeAdTracking:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/tv48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"tv48" ofType:@"png"]];
                     break;
                 case ATHitTypeAudio:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/audio48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"audio48" ofType:@"png"]];
                     break;
                 case ATHitTypeVideo:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/video48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"video48" ofType:@"png"]];
                     break;
                 case ATHitTypeProductDisplay:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/product48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"product48" ofType:@"png"]];
                     break;
                 default:
-                    hitTypeView.image = [UIImage imageNamed:@"ATAssets.bundle/smartphone48"];
+                    hitTypeView.image = [UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"smartphone48" ofType:@"png"]];
                     break;
             }
             
@@ -1443,7 +1509,7 @@ SOFTWARE.
             
             
             
-            [deleteButton setBackgroundImage:[UIImage imageNamed:@"ATAssets.bundle/trash48"] forState:UIControlStateNormal];
+            [deleteButton setBackgroundImage:[UIImage imageWithContentsOfFile:[self.bundle pathForResource:@"trash48" ofType:@"png"]] forState:UIControlStateNormal];
             deleteButton.tag = i;
             [deleteButton addTarget:self action:@selector(deleteOfflineHit:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -1485,7 +1551,7 @@ SOFTWARE.
 }
 
 - (void)deleteOfflineHit:(UIButton *)sender {
-    ATStorage* storage = [[ATStorage alloc] init];
+    ATStorage* storage = [ATStorage sharedInstance];
     [storage delete:((ATHit *)self.hits[sender.tag]).url];
     
     [self getOfflineHitsList:(ATDebuggerWindow *)self.windows[[self.windows count] - 1]];
@@ -1629,7 +1695,7 @@ SOFTWARE.
                                                         attribute:NSLayoutAttributeBottom
                                                        multiplier:1.0f
                                                          constant:0.0f]];
-
+    
     ATDebuggerWindow* debugWindow = [[ATDebuggerWindow alloc] init];
     debugWindow.window = window;
     debugWindow.menu = menu;

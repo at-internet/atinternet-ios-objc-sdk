@@ -55,13 +55,13 @@ class ScreenTests: XCTestCase {
         
         XCTAssertEqual(screen.tracker.buffer.volatileParameters.count, 4, "Le nombre de paramètres volatiles doit être égal à 4")
         XCTAssert(screen.tracker.buffer.volatileParameters[0].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(screen.tracker.buffer.volatileParameters[0].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((screen.tracker.buffer.volatileParameters[0] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(screen.tracker.buffer.volatileParameters[1].key == "action", "Le second paramètre doit être action")
-        XCTAssert(screen.tracker.buffer.volatileParameters[1].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((screen.tracker.buffer.volatileParameters[1] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(screen.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(screen.tracker.buffer.volatileParameters[2].value!() == "Home", "La valeur du troisième paramètre doit être Home")
+        XCTAssert((screen.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Home", "La valeur du troisième paramètre doit être Home")
     }
     
     func testSetScreenWithNameAndChapter() {
@@ -69,7 +69,7 @@ class ScreenTests: XCTestCase {
         screen.setEvent()
         
         XCTAssert(screen.tracker.buffer.volatileParameters[2].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(screen.tracker.buffer.volatileParameters[2].value!() == "Sport::Basket", "La valeur du troisième paramètre doit être Sport::Basket")
+        XCTAssert((screen.tracker.buffer.volatileParameters[2] as! ATParam).value() == "Sport::Basket", "La valeur du troisième paramètre doit être Sport::Basket")
     }
     
     func testAddScreen() {
@@ -99,7 +99,7 @@ class ScreenTests: XCTestCase {
     func testSetDynamicScreen() {
         dateFormatter.dateFormat = "YYYYMMddHHmm"
         
-        dynamicScreen.screenId = 123
+        dynamicScreen.screenId = "123"
         dynamicScreen.update = curDate;
         dynamicScreen.name = "HomeDyn"
         dynamicScreen.chapter1 = "chap1"
@@ -111,22 +111,60 @@ class ScreenTests: XCTestCase {
         XCTAssertEqual(dynamicScreen.tracker.buffer.volatileParameters.count, 7, "Le nombre de paramètres volatiles doit être égal à 7")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[0].key == "pchap", "Le paramètre doit être pchap")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[0].value!() == "chap1::chap2::chap3", "La valeur doit être chap1::chap2::chap3")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[0] as! ATParam).value() == "chap1::chap2::chap3", "La valeur doit être chap1::chap2::chap3")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[1].key == "pid", "Le paramètre doit être pid")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[1].value!() == "123", "La valeur doit être 123")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[1] as! ATParam).value() == "123", "La valeur doit être 123")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[2].key == "pidt", "Le paramètre doit être pidt")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[2].value!() == dateFormatter.stringFromDate(curDate), "La valeur doit être curDate")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[2] as! ATParam).value() == dateFormatter.stringFromDate(curDate), "La valeur doit être curDate")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[3].key == "type", "Le premier paramètre doit être type")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[3].value!() == "screen", "La valeur du premier paramètre doit être screen")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[3] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[4].key == "action", "Le second paramètre doit être action")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[4].value!() == "view", "La valeur du second paramètre doit être view")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[4] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
         
         XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[5].key == "p", "Le troisième paramètre doit être p")
-        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[5].value!() == "HomeDyn", "La valeur du troisième paramètre doit être HomeDyn")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[5] as! ATParam).value() == "HomeDyn", "La valeur du troisième paramètre doit être HomeDyn")
+    }
+    
+    func testSetDynamicScreenWithTooLongStringId() {
+        dateFormatter.dateFormat = "YYYYMMddHHmm"
+        
+        var s = ""
+        for i in 0 ..< 256 {
+            s += String(i)
+        }
+        
+        dynamicScreen.screenId = s
+        dynamicScreen.update = curDate;
+        dynamicScreen.name = "HomeDyn"
+        dynamicScreen.chapter1 = "chap1"
+        dynamicScreen.chapter2 = "chap2"
+        dynamicScreen.chapter3 = "chap3"
+        
+        dynamicScreen.setEvent()
+        
+        XCTAssertEqual(dynamicScreen.tracker.buffer.volatileParameters.count, 7, "Le nombre de paramètres volatiles doit être égal à 7")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[0].key == "pchap", "Le paramètre doit être pchap")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[0] as! ATParam).value() == "chap1::chap2::chap3", "La valeur doit être chap1::chap2::chap3")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[1].key == "pid", "Le paramètre doit être pid")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[1] as! ATParam).value() == "", "La valeur doit être vide")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[2].key == "pidt", "Le paramètre doit être pidt")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[2] as! ATParam).value() == dateFormatter.stringFromDate(curDate), "La valeur doit être curDate")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[3].key == "type", "Le premier paramètre doit être type")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[3] as! ATParam).value() == "screen", "La valeur du premier paramètre doit être screen")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[4].key == "action", "Le second paramètre doit être action")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[4] as! ATParam).value() == "view", "La valeur du second paramètre doit être view")
+        
+        XCTAssert(dynamicScreen.tracker.buffer.volatileParameters[5].key == "p", "Le troisième paramètre doit être p")
+        XCTAssert((dynamicScreen.tracker.buffer.volatileParameters[5] as! ATParam).value() == "HomeDyn", "La valeur du troisième paramètre doit être HomeDyn")
     }
     
     func testAddDynamicScreen() {
@@ -139,8 +177,8 @@ class ScreenTests: XCTestCase {
         XCTAssert(dynamicScreen.name == "HomeDyn", "Le nom de l'écran doit etre égal à HomeDyn")
         XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).name == "HomeDyn", "Le nom de l'écran doit etre égal à HomeDyn")
         
-        XCTAssert(dynamicScreen.screenId == 123, "L'identifiant d'écran doit etre égal à 123")
-        XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).screenId == 123, "L'identifiant d'écran doit etre égal à 123")
+        XCTAssert(dynamicScreen.screenId == "123", "L'identifiant d'écran doit etre égal à 123")
+        XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).screenId == "123", "L'identifiant d'écran doit etre égal à 123")
         
         XCTAssert(dynamicScreen.update == curDate, "La date de l'écran doit être égal à curDate")
         XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).update == curDate, "La date de l'écran doit être égal à curDate")
@@ -156,8 +194,8 @@ class ScreenTests: XCTestCase {
         XCTAssert(dynamicScreen.name == "HomeDyn", "Le nom de l'écran doit etre égal à HomeDyn")
         XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).name == "HomeDyn", "Le nom de l'écran doit etre égal à HomeDyn")
         
-        XCTAssert(dynamicScreen.screenId == 123, "L'identifiant d'écran doit etre égal à 123")
-        XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).screenId == 123, "L'identifiant d'écran doit etre égal à 123")
+        XCTAssert(dynamicScreen.screenId == "123", "L'identifiant d'écran doit etre égal à 123")
+        XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).screenId == "123", "L'identifiant d'écran doit etre égal à 123")
         
         XCTAssert(dynamicScreen.update == curDate, "La date de l'écran doit être égal à curDate")
         XCTAssert((dynamicScreens.tracker.businessObjects[dynamicScreen._id] as! ATDynamicScreen).update == curDate, "La date de l'écran doit être égal à curDate")
