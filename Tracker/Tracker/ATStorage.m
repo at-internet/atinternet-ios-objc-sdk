@@ -155,7 +155,20 @@ NSString* entityName = @"ATStoredOfflineHit";
     }
 }
 
+- (void)saveToPersistentStore {
+    [self.managedObjectContext performBlockAndWait:^{
+        [self.managedObjectContext save:nil];
+    }];
+}
+
+- (NSManagedObjectContext *)newPrivateContext {
+    NSManagedObjectContext *privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    privateContext.parentContext = self.managedObjectContext;
+    return privateContext;
+}
+
 - (BOOL)insertHit:(NSString **)hit mhOlt:(NSString *)mhOlt {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSDate* now = [NSDate date];
         NSString* olt;
@@ -169,13 +182,13 @@ NSString* entityName = @"ATStoredOfflineHit";
         *hit = [self buildHitToStore:*hit olt:olt];
         
         if([self exists:*hit] == NO) {
-            [self.managedObjectContext performBlockAndWait:^{
-                ATStoredOfflineHit* managedHit = (ATStoredOfflineHit *)[NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.managedObjectContext];
+            [privateContext performBlockAndWait:^{
+                ATStoredOfflineHit* managedHit = (ATStoredOfflineHit *)[NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:privateContext];
                 managedHit.hit = *hit;
                 managedHit.date = now;
                 managedHit.retry = 0;
+                [privateContext save:nil];
             }];
-            
             return [self saveContext];
         } else {
             return YES;
@@ -185,14 +198,49 @@ NSString* entityName = @"ATStoredOfflineHit";
     return NO;
 }
 
+- (void)setRetryCount:(NSInteger)count forOfflineHit:(NSManagedObjectID *)oid; {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    if(self.managedObjectContext && oid) {
+        [privateContext performBlockAndWait:^{
+            ATStoredOfflineHit *hit = [privateContext objectWithID:oid];
+            hit.retry = [NSNumber numberWithInteger:count];
+            [privateContext save:nil];
+            [self saveToPersistentStore];
+        }];
+    }
+}
+
+- (NSInteger)getRetryCountForHit:(NSString *)hit; {
+    NSManagedObjectID *offlineHitID = [self storedHit:hit];
+    return [self getRetryCount:offlineHitID];
+}
+
+- (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit {
+    NSManagedObjectID *offlineHitID = [self storedHit:hit];
+    [self setRetryCount:retryCount forOfflineHit:offlineHitID];
+}
+
+- (NSInteger) getRetryCount:(NSManagedObjectID *)oid {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    __block NSInteger retry = -1;
+    if(self.managedObjectContext && oid) {
+        [privateContext performBlockAndWait:^{
+            ATStoredOfflineHit *hit = [privateContext objectWithID:oid];
+            retry = hit.retry.integerValue;
+        }];
+    }
+    return retry;
+}
+
 - (NSArray *)hits {
     NSMutableArray* hits = [[NSMutableArray alloc] init];
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 for(ATStoredOfflineHit *storedHit in storedHits) {
@@ -214,14 +262,16 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (ATHit *)hit:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
         request.predicate = filter;
         __block ATHit* hit;
         
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 if([storedHits count] > 0) {
@@ -243,13 +293,16 @@ NSString* entityName = @"ATStoredOfflineHit";
     return nil;
 }
 
+
+
 - (NSArray *)storedHits {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         
         __block NSArray* hits = [[NSArray alloc] init];
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 hits = storedHits;
@@ -263,14 +316,15 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (NSManagedObjectID *)storedHit:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     __block ATStoredOfflineHit *storedHit;
     __block NSArray* storedHits;
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
-        [self.managedObjectContext performBlockAndWait:^{
+        [privateContext performBlockAndWait:^{
             NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
             request.predicate = filter;
-            storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+            storedHits = [privateContext executeFetchRequest:request error:nil];
         }];
         if(storedHits) {
             if([storedHits count] > 0) {
@@ -315,6 +369,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (NSInteger)count {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -322,8 +377,8 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.includesPropertyValues = NO;
         
         __block NSInteger result = -1;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSInteger count = [self.managedObjectContext countForFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSInteger count = [privateContext countForFetchRequest:request error:nil];
             
             if(count == NSNotFound) {
                 result = 0;
@@ -339,6 +394,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (BOOL)exists:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -346,11 +402,11 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.includesPropertyValues = NO;
         
         __block BOOL exists;
-        [self.managedObjectContext performBlockAndWait:^{
+        [privateContext performBlockAndWait:^{
             NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
             request.predicate = filter;
             
-            NSInteger count = [self.managedObjectContext countForFetchRequest:request error:nil];
+            NSInteger count = [privateContext countForFetchRequest:request error:nil];
             exists = (count > 0);
         }];
         return exists;
@@ -360,6 +416,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (NSInteger)deleteAll {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -367,16 +424,17 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.includesPropertyValues = NO;
         
         __block NSInteger result = -2;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 for(ATStoredOfflineHit* storedHit in storedHits) {
-                    [self.managedObjectContext deleteObject:storedHit];
+                    [privateContext deleteObject:storedHit];
                 }
                 
-                if([self.managedObjectContext save:nil]) {
+                if([privateContext save:nil]) {
                     result = [storedHits count];
+                    [self saveToPersistentStore];
                 } else {
                     result = -1;
                 }
@@ -392,6 +450,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (NSInteger)deleteFromDate:(NSDate *)olderThan {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -402,16 +461,17 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.predicate = filter;
         
         __block NSInteger result = -2;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 for(ATStoredOfflineHit* storedHit in storedHits) {
-                    [self.managedObjectContext deleteObject:storedHit];
+                    [privateContext deleteObject:storedHit];
                 }
                 
-                if([self.managedObjectContext save:nil]) {
+                if([privateContext save:nil]) {
                     result = [storedHits count];
+                    [self saveToPersistentStore];
                 } else {
                     result = -1;
                 }
@@ -427,6 +487,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (BOOL)delete:(NSString *)hit {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         request.entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
@@ -436,15 +497,16 @@ NSString* entityName = @"ATStoredOfflineHit";
         NSPredicate* filter = [NSPredicate predicateWithFormat:@"hit == %@", hit];
         request.predicate = filter;
         __block BOOL done;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 for(ATStoredOfflineHit* storedHit in storedHits) {
-                    [self.managedObjectContext deleteObject:storedHit];
-                    
-                    done = [self.managedObjectContext save:nil];
+                    [privateContext deleteObject:storedHit];
                 }
+                done = [privateContext save:nil];
+                done = done && [self saveContext];
+                
             } else {
                 done = NO;
             }
@@ -456,6 +518,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (ATHit *)first {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -464,8 +527,8 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.fetchLimit = 1;
         
         __block ATHit* hit;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 if([storedHits count] > 0) {
@@ -488,6 +551,7 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 - (ATHit *)last {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:entityName];
         NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
@@ -495,8 +559,8 @@ NSString* entityName = @"ATStoredOfflineHit";
         request.sortDescriptors = @[sortDescriptor];
         request.fetchLimit = 1;
         __block ATHit *hit;
-        [self.managedObjectContext performBlockAndWait:^{
-            NSArray* storedHits = [self.managedObjectContext executeFetchRequest:request error:nil];
+        [privateContext performBlockAndWait:^{
+            NSArray* storedHits = [privateContext executeFetchRequest:request error:nil];
             
             if(storedHits) {
                 if([storedHits count] > 0) {

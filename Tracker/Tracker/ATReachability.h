@@ -71,7 +71,7 @@ extern NSString *kATReachabilityChangedNotification;
 /*!
  * Use to check the reachability of a given IP address.
  */
-+ (instancetype)reachabilityWithAddress:(const struct sockaddr_in *)hostAddress;
++ (instancetype)reachabilityWithAddress:(const void *)hostAddress;
 
 /*!
  * Checks whether the default route is available. Should be used by applications that do not connect to a particular host.
@@ -81,7 +81,7 @@ extern NSString *kATReachabilityChangedNotification;
 /*!
  * Checks whether a local WiFi connection is available.
  */
-+ (instancetype)reachabilityForLocalWiFi;
+//+ (instancetype)reachabilityForLocalWiFi;
 
 /*!
  * Start listening for reachability notifications on the current run loop.

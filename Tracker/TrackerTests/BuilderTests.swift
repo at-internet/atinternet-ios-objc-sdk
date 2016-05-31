@@ -326,6 +326,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
     }
     
     // Teste l'envoi d'un hit
+    /*
     func testSendHit() {
         _ = [ATParam]()
         
@@ -383,7 +384,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         })
         
         self.waitForExpectationsWithTimeout(5.0, handler: nil)
-    }
+    }*/
 
     // Teste que la méthode findParameterPosition retourne la bonne position du paramètre dans la collection
     func testFindParameterPosition() {
