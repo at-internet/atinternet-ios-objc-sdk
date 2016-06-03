@@ -33,7 +33,11 @@ SOFTWARE.
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_WATCH
+@class WKInterfaceController;
+#else
 @class UIViewController;
+#endif
 
 @class ATBuffer;
 @class ATConfiguration;
@@ -130,7 +134,11 @@ typedef NS_ENUM(int, ATPluginKey) {
 #pragma mark -- Tool
 
 @property (nonatomic) id delegate;
+#if TARGET_OS_WATCH
+@property (nonatomic, strong) WKInterfaceController *debugger;
+#else
 @property (nonatomic, strong) UIViewController *debugger;
+#endif
 
 #pragma mark -- Internal
 

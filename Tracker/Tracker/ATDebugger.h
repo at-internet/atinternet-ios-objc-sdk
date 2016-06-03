@@ -31,11 +31,18 @@ SOFTWARE.
 //
 
 #import <Foundation/Foundation.h>
+#if TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
+#else
 #import <UIKit/UIKit.h>
+#endif
 
 @interface ATDebugger : NSObject
-
+#if TARGET_OS_WATCH
+@property (nonatomic, strong) WKInterfaceController *viewController;
+#else
 @property (nonatomic, strong) UIViewController *viewController;
+#endif
 
 - (void)addEvent:(NSString *)message icon:(NSString *)icon;
 + (ATDebugger *)sharedInstance;

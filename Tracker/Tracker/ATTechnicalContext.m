@@ -32,13 +32,19 @@ SOFTWARE.
 
 
 #import <UIKit/UIKit.h>
+#if !TARGET_OS_WATCH
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <sys/utsname.h>
+#else
+#import <WatchKit/WatchKit.h>
+#endif
 
 #import "ATTechnicalContext.h"
+#if !TARGET_OS_WATCH
 #import "ATReachability.h"
+#endif
 #import "ATTool.h"
 #import "ATConfiguration.h"
 
@@ -93,7 +99,8 @@ static NSInteger _level2 = 0;
 }
 
 + (NSString *)userId:(NSString *)identifier {
-    
+
+#if !TARGET_OS_WATCH
     if([self doNotTrack] == NO) {
         
         if([identifier.lowercaseString isEqualToString:@"idfv"]){
@@ -116,7 +123,9 @@ static NSInteger _level2 = 0;
         return @"opt-out";
         
     }
-    
+#else
+    return @"opt-out";
+#endif
 }
 
 + (NSString *)sdkVersion {
@@ -128,16 +137,26 @@ static NSInteger _level2 = 0;
 }
 
 + (NSString *)device {
+#if !TARGET_OS_WATCH
     struct utsname systemInfo;
     uname(&systemInfo);
         
     return [NSString stringWithFormat:@"[apple]-[%@]", [NSString stringWithCString:systemInfo.machine
                                                                           encoding:NSUTF8StringEncoding]];
+#else
+    return @"AppleWatch";
+#endif
 }
 
 + (NSString *)operatingSystem {
+#if !TARGET_OS_WATCH
     NSString * systemName = [[[UIDevice currentDevice] systemName].lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""];
     return [NSString stringWithFormat:@"[%@]-[%@]", systemName, [[UIDevice currentDevice] systemVersion]];
+#else
+    NSString * systemName = [[[WKInterfaceDevice currentDevice] systemName].lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    return [NSString stringWithFormat:@"[%@]-[%@]", systemName, [[WKInterfaceDevice currentDevice] systemVersion]];
+    
+#endif
 }
 
 + (NSString *)applicationIdentifier {
@@ -159,14 +178,22 @@ static NSInteger _level2 = 0;
 }
 
 + (NSString *)screenResolution {
+#if !TARGET_OS_WATCH
     UIScreen *mainScreen = [UIScreen mainScreen];
     CGSize bounds = mainScreen.bounds.size;
     CGFloat scale = mainScreen.scale;
-  
+#else
+    WKInterfaceDevice* device = [WKInterfaceDevice currentDevice];
+    CGSize bounds = device.screenBounds.size;
+    CGFloat scale = device.screenScale;
+    
+#endif
+    
     return [NSString stringWithFormat:@"%ix%i", (int)(bounds.width * scale), (int)(bounds.height * scale)];
 }
 
 + (NSString *)carrier {
+#if !TARGET_OS_WATCH
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *provider = networkInfo.subscriberCellularProvider;
     
@@ -174,6 +201,7 @@ static NSInteger _level2 = 0;
         NSString *carrier = provider.carrierName;
         return carrier ? carrier : @"";
     }
+#endif
     
     return @"";
 }
@@ -188,6 +216,7 @@ static NSInteger _level2 = 0;
 }
 
 + (ATConnectionType)connectionType {
+#if !TARGET_OS_WATCH
     ATReachability *reachability = [ATReachability reachabilityForInternetConnection];
     
     if(reachability.currentReachabilityStatus == ReachableViaWiFi){
@@ -228,6 +257,9 @@ static NSInteger _level2 = 0;
             return ATConnectionTypeUnknown;
         }
     }
+#else
+    return ATConnectionTypeUnknown;
+#endif
 }
 
 @end

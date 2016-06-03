@@ -117,7 +117,7 @@ static NSDate* _timeInBackground = nil;
 - (instancetype)init {
     if (self = [super init]) {
         self.parameters = [[NSMutableDictionary alloc] init];
-        self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         if (!_initialized) {
             [self initMetrics];
         }

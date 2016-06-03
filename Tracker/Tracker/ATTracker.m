@@ -103,7 +103,15 @@ SOFTWARE.
 @synthesize delegate = _delegate;
 
 static BOOL _handleCrash = NO;
+#if TARGET_OS_WATCH
+- (WKInterfaceController *) debugger {
+    return [ATDebugger sharedInstance].viewController;
+}
 
+- (void)setDebugger:(WKInterfaceController *)debugger {
+    [ATDebugger sharedInstance].viewController = debugger;
+}
+#else
 - (UIViewController *) debugger {
     return [ATDebugger sharedInstance].viewController;
 }
@@ -111,6 +119,7 @@ static BOOL _handleCrash = NO;
 - (void)setDebugger:(UIViewController *)debugger {
     [ATDebugger sharedInstance].viewController = debugger;
 }
+#endif
 
 - (ATGestures *)gestures {
     if(!_gestures) {
@@ -316,8 +325,13 @@ static BOOL _handleCrash = NO;
         self.configuration = [[ATConfiguration alloc] initWithDictionary: configuration];
         if(![ATLifeCycle isInitialized]){
             NSNotificationCenter* notificationCenter = [NSNotificationCenter defaultCenter];
+#if TARGET_OS_WATCH
+            [notificationCenter addObserver:self selector:@selector(applicationDidEnterBackground:) name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+            [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive:) name:NSExtensionHostDidBecomeActiveNotification object:nil];
+#else
             [notificationCenter addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
             [notificationCenter addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+#endif
             [ATLifeCycle applicationDidBecomeActive:self.configuration.parameters];
         }
         self.lifeCycle = [[ATLifeCycle alloc] init];
