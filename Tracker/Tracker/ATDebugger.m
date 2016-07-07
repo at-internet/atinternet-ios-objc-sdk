@@ -125,9 +125,12 @@
     if (self = [super init]) {
         self.hourFormatter = [[NSDateFormatter alloc] init];
         self.hourFormatter.dateFormat = @"HH':'mm':'ss";
+        NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        self.hourFormatter.locale = locale;
         
         self.dateHourFormatter = [[NSDateFormatter alloc] init];
         self.dateHourFormatter.dateFormat = @"dd'/'MM'/'YYYY' 'HH':'mm':'ss";
+        self.dateHourFormatter.locale = locale;
         
         self.debugButtonPosition = @"Right";
         self.debuggerAnimating = NO;

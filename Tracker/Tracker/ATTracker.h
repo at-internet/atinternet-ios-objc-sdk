@@ -129,7 +129,7 @@ typedef NS_ENUM(int, ATPluginKey) {
 
 #pragma mark -- Tool
 
-@property (nonatomic) id delegate;
+@property (nonatomic, weak) id delegate;
 @property (nonatomic, strong) UIViewController *debugger;
 
 #pragma mark -- Internal

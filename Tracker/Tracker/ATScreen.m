@@ -163,6 +163,7 @@ SOFTWARE.
     [self.tracker setStringParam:@"pid" value:self.screenId];
     
     self.dateFormatter.dateFormat = @"YYYYMMddHHmm";
+    self.dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
     [self.tracker setStringParam:@"pidt" value:[self.dateFormatter stringFromDate:self.update]];
     
     [self.tracker.event setWithCategory:@"screen" action:[self getStringAction:self.action] label:self.name];

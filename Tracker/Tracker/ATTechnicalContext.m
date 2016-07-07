@@ -43,7 +43,7 @@ SOFTWARE.
 #import "ATConfiguration.h"
 
 
-#define AT_SDK_VERSION @"2.2.2"
+#define AT_SDK_VERSION @"2.2.3"
 
 
 @implementation ATTechnicalContext
@@ -155,6 +155,7 @@ static NSInteger _level2 = 0;
 + (NSString *)localHour {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"HH'x'mm'x'ss";
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
     return [formatter stringFromDate:[[NSDate alloc] init]];
 }
 

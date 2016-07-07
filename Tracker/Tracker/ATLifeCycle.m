@@ -52,7 +52,7 @@ static NSDate* _timeInBackground = nil;
 // Number of days since last app session
 @property (nonatomic) NSInteger daysSinceLastSession;
 // Calendar type
-@property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, strong) NSLocale *locale;
 
 @end
 
@@ -117,7 +117,7 @@ static NSDate* _timeInBackground = nil;
 - (instancetype)init {
     if (self = [super init]) {
         self.parameters = [[NSMutableDictionary alloc] init];
-        self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        self.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         if (!_initialized) {
             [self initMetrics];
         }
@@ -130,13 +130,13 @@ static NSDate* _timeInBackground = nil;
     NSUserDefaults *userDefaults = [[NSUserDefaults standardUserDefaults] init];
     [userDefaults synchronize];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.calendar = self.calendar;
+    dateFormatter.locale = self.locale;
     dateFormatter.dateFormat = @"yyyyMMdd";
     NSDateFormatter *monthFormatter = [[NSDateFormatter alloc] init];
-    monthFormatter.calendar = self.calendar;
+    monthFormatter.locale = self.locale;
     monthFormatter.dateFormat = @"yyyyMM";
     NSDateFormatter *weekFormatter = [[NSDateFormatter alloc] init];
-    weekFormatter.calendar = self.calendar;
+    weekFormatter.locale = self.locale;
     weekFormatter.dateFormat = @"yyyyww";
     
     NSDate *now = [[NSDate alloc] init];
@@ -193,7 +193,7 @@ static NSDate* _timeInBackground = nil;
         [userDefaults setInteger:0 forKey:FIRST_SESSION];
         
         NSDateFormatter *dateformatter = [[NSDateFormatter alloc] init];
-        dateformatter.calendar = self.calendar;
+        dateformatter.locale = self.locale;
         dateformatter.dateFormat = @"YYYYMMdd";
         
         NSString *fld = [userDefaults objectForKey:@"firstLaunchDate"];
@@ -233,7 +233,7 @@ static NSDate* _timeInBackground = nil;
         NSDate *firstLaunchDate = [userDefaults objectForKey:FIRST_SESSION_DATE];
         NSDate *now = [[NSDate alloc] init];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.calendar = self.calendar;
+        dateFormatter.locale = self.locale;
         dateFormatter.dateFormat = @"yyyyMMdd";
         
         // First Session
