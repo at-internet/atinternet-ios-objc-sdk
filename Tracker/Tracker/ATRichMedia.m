@@ -157,7 +157,7 @@ SOFTWARE.
     [self.tracker.dispatcher dispatch:@[self]];
     
     if (refreshDuration != 0) {
-        if (self.refreshDuration > 5) {
+        if (refreshDuration > 5) {
             self.refreshDuration = refreshDuration;
         }
         [self initRefresh];

@@ -338,36 +338,6 @@ NSString* entityName = @"ATStoredOfflineHit";
 }
 
 
-- (void)setRetryCount:(NSInteger)count forOfflineHit:(NSManagedObjectID *)oid; {
-    if(self.managedObjectContext) {
-        [self.managedObjectContext performBlockAndWait:^{
-            ATStoredOfflineHit *hit = [self.managedObjectContext objectWithID:oid];
-            hit.retry = [NSNumber numberWithInteger:count];
-            [self.managedObjectContext save:nil];
-        }];
-    }
-}
-
-- (NSInteger)getRetryCountForHit:(NSString *)hit; {
-    NSManagedObjectID *offlineHitID = [self storedHit:hit];
-    return [self getRetryCount:offlineHitID];
-}
-- (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit {
-    NSManagedObjectID *offlineHitID = [self storedHit:hit];
-    [self setRetryCount:retryCount forOfflineHit:offlineHitID];
-}
-
-- (NSInteger) getRetryCount:(NSManagedObjectID *)oid {
-    __block NSInteger retry = -1;
-    if(self.managedObjectContext) {
-        [self.managedObjectContext performBlockAndWait:^{
-            ATStoredOfflineHit *hit = [self.managedObjectContext objectWithID:oid];
-            retry = hit.retry.integerValue;
-        }];
-    }
-    return retry;
-}
-
 - (NSInteger)count {
     NSManagedObjectContext *privateContext = [self newPrivateContext];
     if(self.managedObjectContext) {
