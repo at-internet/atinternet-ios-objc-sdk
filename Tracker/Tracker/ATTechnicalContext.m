@@ -43,6 +43,7 @@ SOFTWARE.
 #import "ATConfiguration.h"
 
 
+
 #define AT_SDK_VERSION @"2.2.4"
 
 
