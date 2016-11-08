@@ -104,7 +104,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -136,7 +136,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -167,7 +167,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -202,7 +202,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -246,7 +246,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -277,7 +277,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")
@@ -312,7 +312,7 @@ class BuilderTests: XCTestCase, ATTrackerDelegate {
         let url = NSURL(string: hits[0] as! String)
         
         _ = [String: String]()
-        let urlComponents = url?.absoluteString.componentsSeparatedByString("&")
+        let urlComponents = url?.absoluteString!.componentsSeparatedByString("&")
         
         for component in urlComponents! as [String] {
             let pairComponents = component.componentsSeparatedByString("=")

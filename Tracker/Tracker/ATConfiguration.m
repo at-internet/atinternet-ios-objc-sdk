@@ -58,6 +58,7 @@ SOFTWARE.
 - (instancetype)init {
     if (self = [super init]) {
         NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"ATAssets" ofType:@"bundle"];
+        self.parameters = [[NSMutableDictionary alloc] init];
         
         if(!bundlePath){
             bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ATAssets" ofType:@"bundle"];
