@@ -36,6 +36,50 @@
 #import "ATTool.h"
 
 
+
+@implementation ATNilStorage
+
+- (BOOL)insertHit:(NSString **)hit mhOlt:(NSString *)mhOlt; {
+    return NO;
+}
+- (NSArray *)hits;{
+    return @[];
+}
+- (ATHit *)hit:(NSString *)hit;{
+    return nil;
+}
+- (NSArray *)storedHits;{
+    return @[];
+}
+- (NSInteger)count;{
+    return 0;
+}
+- (BOOL)exists:(NSString *)hit;{
+    return NO;
+}
+- (NSInteger)deleteAll;{
+    return 0;
+}
+- (NSInteger)deleteFromDate:(NSDate *)olderThan;{
+    return 0;
+}
+- (BOOL)delete:(NSString *)hit; {
+    return NO;
+}
+- (ATHit *)first;{
+    return nil;
+}
+- (ATHit *)last; {
+    return nil;
+}
+- (NSInteger)getRetryCountForHit:(NSString *)hit;{
+    return 0;
+}
+- (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit;{}
+
+@end
+
+
 @interface ATStorage()
 
 - (NSString *)buildHitToStore:(NSString *)hit olt:(NSString *)olt;
@@ -51,12 +95,18 @@
 
 NSString* entityName = @"ATStoredOfflineHit";
 
-+ (id) sharedInstance {
-    static ATStorage *sharedStorage = nil;
++ (id)sharedInstanceOf:(NSString *)type; {
+    static id<ATStorageProtocol> sharedStorage = nil;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedStorage = [[self alloc] init];
-    });
+    if ([type isEqualToString:@"never"]) {
+        dispatch_once(&onceToken, ^{
+            sharedStorage = [[ATNilStorage alloc] init];
+        });
+    } else {
+        dispatch_once(&onceToken, ^{
+            sharedStorage = [[self alloc] init];
+        });
+    }
     return sharedStorage;
 }
 

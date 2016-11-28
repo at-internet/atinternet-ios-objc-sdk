@@ -34,12 +34,14 @@ SOFTWARE.
 #import "ATTracker.h"
 #import "ATStorage.h"
 #import "ATSender.h"
+#import "ATConfiguration.h"
 
 @implementation ATOffline
 
 - (instancetype)initWithTracker:(ATTracker *)tracker {
     if (self = [super init]) {
         self.tracker = tracker;
+        self.offlineMode = tracker.configuration.parameters[@"storage"];
     }
     
     return self;
@@ -49,16 +51,16 @@ SOFTWARE.
     [ATSender sendOfflineHits:self.tracker forceSendOfflineHits:YES];
 }
 - (NSArray *)get {
-    return [[ATStorage sharedInstance] hits];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] hits];
 }
 
 - (NSInteger)count {
-    return [[ATStorage sharedInstance] count];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] count];
     
 }
 
 - (NSInteger)delete {
-    return [[ATStorage sharedInstance] deleteAll];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] deleteAll];
 }
 
 - (NSInteger)deleteOlderThanDays:(NSInteger)days {
@@ -68,19 +70,19 @@ SOFTWARE.
     
     NSDate* past =[[NSCalendar currentCalendar] dateByAddingComponents:dateComponent toDate:now options:kNilOptions];
     
-    return [[ATStorage sharedInstance] deleteFromDate:past];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] deleteFromDate:past];
 }
 
 - (NSInteger)deleteOlderThanDate:(NSDate *)date {
-    return [[ATStorage sharedInstance] deleteFromDate:date];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] deleteFromDate:date];
 }
 
 - (ATHit *)oldest {
-    return [[ATStorage sharedInstance] first];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] first];
 }
 
 - (ATHit *)latest {
-    return [[ATStorage sharedInstance] last];
+    return [[ATStorage sharedInstanceOf:self.offlineMode] last];
 }
 
 

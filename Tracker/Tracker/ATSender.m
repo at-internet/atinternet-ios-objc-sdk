@@ -41,6 +41,7 @@
 #import "ATHit.h"
 #import "ATTrackerQueue.h"
 #import "ATDebugger.h"
+#import "ATConfiguration.h"
 
 #ifndef AT_EXTENSION
 #import "ATBackgroundTask.h"
@@ -139,7 +140,7 @@ static BOOL sentWithSuccess = NO;
  */
 
 - (void)sendWithCompletionHandler:(void (^)(BOOL))completionHandler {
-    ATStorage *db = [ATStorage sharedInstance];
+    ATStorage *db = [ATStorage sharedInstanceOf:self.tracker.configuration.parameters[@"storage"]];
     
     // Si pas de connexion ou que le mode offline est à "always"
     if (([[self.tracker.configuration.parameters objectForKey:@"storage"] isEqualToString:@"always"] && self.forceSendOfflineHits == NO)
@@ -152,8 +153,8 @@ static BOOL sentWithSuccess = NO;
             // Si le hit ne provient pas du stockage offline, on le sauvegarde
             if (!self.hit.isOffline) {
                 NSString *pURL = self.hit.url;
-                ATStorage *storage = [ATStorage sharedInstance];
-                if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
+                //ATStorage *storage = [ATStorage sharedInstance];
+                if ([db insertHit:&pURL mhOlt:self.mhOlt]) {
                     self.hit.url = pURL;
                     if (self.tracker.delegate) {
                         if ([self.tracker.delegate respondsToSelector:@selector(saveDidEnd:)]) {
@@ -213,11 +214,9 @@ static BOOL sentWithSuccess = NO;
                                    // Si le hit ne provient pas du stockage offline,
                                    // on le sauvegarde si le mode offline est différent de "never"
                                    if (![[self.tracker.configuration.parameters objectForKey:@"storage"] isEqualToString:@"never"]) {
-                                       ATStorage *storage = [ATStorage sharedInstance];
-                                       
                                        if (!self.hit.isOffline) {
                                            NSString *pURL = self.hit.url;
-                                           if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
+                                           if ([db insertHit:&pURL mhOlt:self.mhOlt]) {
                                                self.hit.url = pURL;
                                                if (self.tracker.delegate) {
                                                    if ([self.tracker.delegate respondsToSelector:@selector(saveDidEnd:)]) {
@@ -241,11 +240,11 @@ static BOOL sentWithSuccess = NO;
                                                }
                                            }
                                        } else {
-                                           NSInteger retryCount = [storage getRetryCountForHit:self.hit.url];
+                                           NSInteger retryCount = [db getRetryCountForHit:self.hit.url];
                                            if (retryCount < self.retryCount) {
-                                               [storage setRetryCount:retryCount+1 ForHit:self.hit.url];
+                                               [db setRetryCount:retryCount+1 ForHit:self.hit.url];
                                            } else {
-                                               [storage delete:self.hit.url];
+                                               [db delete:self.hit.url];
                                            }
                                        }
                                        
@@ -275,8 +274,8 @@ static BOOL sentWithSuccess = NO;
                                    // Si le hit provient du stockage et que l'envoi a réussi, on le supprime de la base
                                    if (self.hit.isOffline) {
                                        sentWithSuccess = YES;
-                                       ATStorage *storage = [ATStorage sharedInstance];
-                                       [storage delete:(self.hit.url)];
+                                       //ATStorage *storage = [ATStorage sharedInstance];
+                                       [db delete:(self.hit.url)];
                                    }
                                    
                                    if (self.tracker.delegate) {
@@ -307,8 +306,7 @@ static BOOL sentWithSuccess = NO;
             } else {
                 if (!self.hit.isOffline) {
                     NSString *pURL = self.hit.url;
-                    ATStorage *storage = [ATStorage sharedInstance];
-                    if ([storage insertHit:&pURL mhOlt:self.mhOlt]) {
+                    if ([db insertHit:&pURL mhOlt:self.mhOlt]) {
                         self.hit.url = pURL;
                         if (self.tracker.delegate) {
                             if ([self.tracker.delegate respondsToSelector:@selector(saveDidEnd:)]) {
@@ -389,7 +387,7 @@ static BOOL sentWithSuccess = NO;
                 
                 // If there's no offline hit being sent
                 
-                ATStorage *storage = [ATStorage sharedInstance];
+                ATStorage *storage = [ATStorage sharedInstanceOf:tracker.configuration.parameters[@"storage"]];
                 
                 // Check if offline hits exists in database
                 if ([storage count] > 0) {

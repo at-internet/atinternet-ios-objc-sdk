@@ -36,6 +36,7 @@ SOFTWARE.
 @interface ATDebugger : NSObject
 
 @property (nonatomic, strong) UIViewController *viewController;
+@property (nonatomic, strong) NSString *offlineMode;
 
 - (void)addEvent:(NSString *)message icon:(NSString *)icon;
 + (ATDebugger *)sharedInstance;

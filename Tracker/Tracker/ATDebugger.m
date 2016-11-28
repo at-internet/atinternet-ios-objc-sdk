@@ -145,14 +145,13 @@
         }
         
         self.bundle = [NSBundle bundleWithPath:bundlePath];
-        
-        self.storage = [ATStorage sharedInstance];
     }
     return self;
 }
 
 
 - (void) initDebugger {
+    self.storage = [ATStorage sharedInstanceOf:self.offlineMode];
     [self createDebugButton];
     [self createEventViewer];
     
@@ -1554,15 +1553,12 @@
 }
 
 - (void)deleteOfflineHit:(UIButton *)sender {
-    ATStorage* storage = [ATStorage sharedInstance];
-    [storage delete:((ATHit *)self.hits[sender.tag]).url];
-    
+    [self.storage delete:((ATHit *)self.hits[sender.tag]).url];
     [self getOfflineHitsList:(ATDebuggerWindow *)self.windows[[self.windows count] - 1]];
 }
 
 - (void)trashOfflineHits {
     [self.storage deleteAll];
-    
     [self getOfflineHitsList:(ATDebuggerWindow *)self.windows[[self.windows count] - 1]];
 }
 

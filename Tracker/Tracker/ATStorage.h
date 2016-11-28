@@ -45,7 +45,25 @@
 
 @end
 
-@interface ATStorage : NSObject
+@protocol ATStorageProtocol
+
+- (BOOL)insertHit:(NSString **)hit mhOlt:(NSString *)mhOlt;
+- (NSArray *)hits;
+- (ATHit *)hit:(NSString *)hit;
+- (NSArray *)storedHits;
+- (NSInteger)count;
+- (BOOL)exists:(NSString *)hit;
+- (NSInteger)deleteAll;
+- (NSInteger)deleteFromDate:(NSDate *)olderThan;
+- (BOOL)delete:(NSString *)hit;
+- (ATHit *)first;
+- (ATHit *)last;
+- (NSInteger)getRetryCountForHit:(NSString *)hit;
+- (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit;
+
+@end
+
+@interface ATStorage : NSObject <ATStorageProtocol>
 
 @property (nonatomic, strong, readonly) NSURL* databaseDirectory;
 @property (nonatomic, strong, readonly) NSManagedObjectModel* managedObjectModel;
@@ -70,6 +88,9 @@
 - (NSInteger)getRetryCountForHit:(NSString *)hit;
 - (void)setRetryCount:(NSInteger)retryCount ForHit:(NSString *)hit;
 
-+ (id)sharedInstance;
++ (id)sharedInstanceOf:(NSString *)type;
 
+@end
+
+@interface ATNilStorage : NSObject <ATStorageProtocol>
 @end

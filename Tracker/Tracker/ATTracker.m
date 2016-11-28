@@ -105,11 +105,15 @@ SOFTWARE.
 static BOOL _handleCrash = NO;
 
 - (UIViewController *) debugger {
-    return [ATDebugger sharedInstance].viewController;
+    ATDebugger *debugger = [ATDebugger sharedInstance];
+    debugger.offlineMode = self.configuration.parameters[@"storage"];
+    return debugger.viewController;
 }
 
-- (void)setDebugger:(UIViewController *)debugger {
-    [ATDebugger sharedInstance].viewController = debugger;
+- (void)setDebugger:(UIViewController *)viewDebugger {
+    ATDebugger *debugger = [ATDebugger sharedInstance];
+    debugger.offlineMode = self.configuration.parameters[@"storage"];
+    debugger.viewController = viewDebugger;
 }
 
 - (ATGestures *)gestures {

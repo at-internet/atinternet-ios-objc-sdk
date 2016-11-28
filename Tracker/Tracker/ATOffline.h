@@ -43,6 +43,11 @@ SOFTWARE.
 @property (nonatomic, strong) ATTracker *tracker;
 
 /**
+ Offline mode
+ */
+@property (nonatomic, strong) NSString *offlineMode;
+
+/**
  Send offline hits
  */
 - (void)dispatch;
