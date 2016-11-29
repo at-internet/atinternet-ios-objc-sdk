@@ -40,6 +40,22 @@ end
 
 ```
 
+#Installing the Tracker using the sources : 
+
+1. Open the workspace
+2. Compile the project
+3. In the derived data folder, drag&drop the following files : 
+    * Build/Products/Debug-universal/libATTracker.a
+    * Build/Products/Debug-universal/usr/local/include/include/*
+    * Build/Products/Debug-iphoneos/ATAssets.bundle
+
+In your projet, don't forget to include the following frameworks : 
+_CoreData, CoreTelephony, SystemConfiguration_
+
+and to add the "**-Objc**" flag in "**Other linker flag**" in your Build Settings
+
+
+
 ### License
 MIT
 
