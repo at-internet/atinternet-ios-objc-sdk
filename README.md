@@ -40,7 +40,7 @@ end
 
 ```
 
-#Installing the Tracker using the sources : 
+###Installing the Tracker using the sources : 
 
 1. Open the workspace
 2. Compile the project
