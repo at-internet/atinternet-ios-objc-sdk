@@ -154,23 +154,51 @@ NSString* entityName = @"ATStoredOfflineHit";
         
         NSError *error;
         if (! [[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:&error]) {
-            NSLog(@"%@", error);
+            [NSException raise:@"FileAccessDenied" format:@"Cannot create the CoreData directory %@",error];
         }
         NSURL* sqliteURL = [url URLByAppendingPathComponent:@"Tracker.sqlite"];
         
+        NSDictionary *dbOption = @{NSMigratePersistentStoresAutomaticallyOption : @YES, NSInferMappingModelAutomaticallyOption: @YES};
         if(coordinator) {
-            if([coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:sqliteURL options:kNilOptions error:nil] == nil) {
-                _persistentStoreCoordinator = nil;
+            if([coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:sqliteURL options:dbOption error:nil] == nil) {
+                [self deleteOldDB];
+                if([coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:sqliteURL options:dbOption error:nil] == nil) {
+                    [NSException raise:@"FileAccessDenied" format:@"DB cannot be created"];
+                } else {
+                    _persistentStoreCoordinator = coordinator;
+                }
             } else {
                 _persistentStoreCoordinator = coordinator;
             }
         } else {
+            [NSException raise:@"NilCoordinator" format:@"coordinator cannot be created"];
             _persistentStoreCoordinator = nil;
         }
     }
     
     return _persistentStoreCoordinator;
 }
+
+- (void)deleteOldDB {
+    NSURL *url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    if (!url) {
+        return;
+    }
+    
+    NSURL *db = [url URLByAppendingPathComponent:@"Tracker.sqlite"];
+    NSError *err;
+    NSError *notRemovedError;
+    if ([db checkResourceIsReachableAndReturnError:&err]) {
+        [[NSFileManager defaultManager] removeItemAtURL:db error:&notRemovedError];
+        if (notRemovedError) {
+            [NSException raise:@"FileAccessDenied" format:@"Cannot delete an old Tracker DB File in the CoreData directory %@", notRemovedError];
+        }
+    } else {
+        [NSException raise:@"FileAccessDenied" format:@"Cannot reach Tracker DB File %@", err];
+    }
+}
+
+
 
 - (NSManagedObjectContext *)managedObjectContext {
     if(!_managedObjectContext) {

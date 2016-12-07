@@ -42,8 +42,7 @@ SOFTWARE.
 #import "ATTool.h"
 #import "ATConfiguration.h"
 
-
-#define AT_SDK_VERSION @"2.2.6"
+#define AT_SDK_VERSION @"2.2.7"
 
 
 @implementation ATTechnicalContext

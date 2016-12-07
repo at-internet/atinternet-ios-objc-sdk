@@ -1,17 +1,17 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C4E0BB2AE9A3197A3B49EC22FCD74A30AC46145E+++4E3268E",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A4594E14ADC019CEF8168CD5B121751454AE6244+++4E3268E",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "C4E0BB2AE9A3197A3B49EC22FCD74A30AC46145E+++4E3268E" : 0,
+    "A4594E14ADC019CEF8168CD5B121751454AE6244+++4E3268E" : 0,
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++564CAB3" : 0,
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++62CFEBC" : 0,
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++54CF99A" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F637B26D-1CDA-4E9B-9D8B-E5E7E3BBBA1B",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "C4E0BB2AE9A3197A3B49EC22FCD74A30AC46145E+++4E3268E" : "iOS-V2-ObjC-Tracker\/",
+    "A4594E14ADC019CEF8168CD5B121751454AE6244+++4E3268E" : "iOS-V2-ObjC-Tracker\/",
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++564CAB3" : "AT_Tag_SDK_iOS_v2_objc",
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++62CFEBC" : "AT_Tag_SDK_iOS_v2_objc",
     "A4594E14ADC019CEF8168CD5B121751454AE6244+++54CF99A" : "Tracker\/"
@@ -20,6 +20,11 @@
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ATMobileAnalytics_objc.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/git.intraxiti.com\/Tag\/iOS-V2-ObjC-Tracker.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A4594E14ADC019CEF8168CD5B121751454AE6244+++4E3268E"
+    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/bdxsvn001:8090\/r\/Tag\/iOS\/V2\/ObjC\/Tracker.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
@@ -34,11 +39,6 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/bdxsvn001:8090\/r\/AT_Tag_SDK_iOS_v2_objc",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A4594E14ADC019CEF8168CD5B121751454AE6244+++62CFEBC"
-    },
-    {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/git.intraxiti.com\/Tag\/iOS-V2-ObjC-Tracker.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C4E0BB2AE9A3197A3B49EC22FCD74A30AC46145E+++4E3268E"
     }
   ]
 }
