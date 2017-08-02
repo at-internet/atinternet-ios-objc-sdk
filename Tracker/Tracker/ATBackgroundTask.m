@@ -76,6 +76,9 @@ typedef void (^CompletionBlock)();
 
 - (NSUInteger)beginTaskWithCompletionHandler:(CompletionBlock)_completion;
 {
+#if defined AT_EXTENSION
+    return 0
+#else 
     //read the counter and increment it
     NSUInteger taskKey;
     @synchronized(self) {
@@ -98,10 +101,14 @@ typedef void (^CompletionBlock)();
     
     //return the dictionary key
     return taskKey;
+#endif
 }
 
 - (void)endTaskWithKey:(NSUInteger)_key
 {
+#if defined AT_EXTENSION
+   return
+#else
     @synchronized(self.tasksCompletionBlocks) {
         
         //see if this task has a completion block
@@ -138,6 +145,7 @@ typedef void (^CompletionBlock)();
         }
         
     }
+#end
 }
 
 @end
