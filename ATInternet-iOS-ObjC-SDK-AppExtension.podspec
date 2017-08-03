@@ -15,6 +15,5 @@ Pod::Spec.new do |s|
 	s.source_files  = "Tracker/Tracker/*.{h,m}"
 	s.exclude_files = "Tracker/Tracker/ATBackgroundTask.{h,m}"
 	s.frameworks = "CoreData", "CoreFoundation", "WatchKit", "UIKit", "CoreTelephony", "SystemConfiguration"
-	s.dependency s.name+'/Res'
 	s.requires_arc = true
 end

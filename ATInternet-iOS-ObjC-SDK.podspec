@@ -15,7 +15,6 @@ Pod::Spec.new do |s|
 	s.subspec 'iOS' do |ios|
 		ios.source_files  = "Tracker/Tracker/*.{h,m}"
 		ios.frameworks = "CoreData", "CoreFoundation", "UIKit", "CoreTelephony", "SystemConfiguration"
-		ios.dependency s.name+'/Res'
 	end
 
 	s.requires_arc = true
