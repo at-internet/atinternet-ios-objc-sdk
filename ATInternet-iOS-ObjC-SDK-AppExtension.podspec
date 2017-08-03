@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
 	s.license      = "MIT"
 	s.author     = "AT Internet"
 	s.platform = :ios
-  s.ios.deployment_target = '7.0'
+  	s.ios.deployment_target = '7.0'
 
 	s.source       = { :git => "https://github.com/summerize/atinternet-ios-objc-sdk.git", :tag => s.version}
 	s.prefix_header_file = "Tracker/Tracker/ATTracker-prefix.pch"
