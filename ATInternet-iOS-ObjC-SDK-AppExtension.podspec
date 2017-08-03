@@ -7,15 +7,10 @@ Pod::Spec.new do |s|
 	s.license      = "MIT"
 	s.author     = "AT Internet"
 	s.platform = :ios
-  	s.ios.deployment_target = '7.0'
-
+  s.ios.deployment_target = '7.0'
 	s.source       = { :git => "https://github.com/summerize/atinternet-ios-objc-sdk.git", :tag => s.version}
 	s.prefix_header_file = "Tracker/Tracker/ATTracker-prefix.pch"
-
-	s.subspec 'Res' do |res|
-		res.resource_bundle = {'ATAssets' => ['Tracker/Tracker/*.{xcdatamodeld,png,json}','Tracker/Tracker/ATDefaultConfiguration.plist']}
-	end
-
+	s.resource_bundle = {'ATAssets' => ['Tracker/Tracker/*.{xcdatamodeld,png,json}','Tracker/Tracker/ATDefaultConfiguration.plist']}
 	s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) AT_EXTENSION'}
 	s.source_files  = "Tracker/Tracker/*.{h,m}"
 	s.exclude_files = "Tracker/Tracker/ATBackgroundTask.{h,m}"
