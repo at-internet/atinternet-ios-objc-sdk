@@ -79,23 +79,23 @@ typedef void (^CompletionBlock)();
     //read the counter and increment it
     NSUInteger taskKey;
     @synchronized(self) {
-        
+
         taskKey = self.taskCounter;
         self.taskCounter++;
-        
+
     }
-    
+
     //tell the OS to start a task that should continue in the background if needed
     NSUInteger taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [self endTaskWithKey:taskKey];
     }];
-    
+
     //add this task identifier to the active task dictionary
     [self.tasks setObject:[NSNumber numberWithUnsignedLong:taskId] forKey:[NSNumber numberWithUnsignedLong:taskKey]];
-    
+
     //store the completion block (if any)
     if (_completion) [self.tasksCompletionBlocks setObject:_completion forKey:[NSNumber numberWithUnsignedLong:taskKey]];
-    
+
     //return the dictionary key
     return taskKey;
 }
@@ -103,25 +103,25 @@ typedef void (^CompletionBlock)();
 - (void)endTaskWithKey:(NSUInteger)_key
 {
     @synchronized(self.tasksCompletionBlocks) {
-        
+
         //see if this task has a completion block
         CompletionBlock completion = [self.tasksCompletionBlocks objectForKey:[NSNumber numberWithUnsignedLong:_key]];
         if (completion) {
-            
+
             //run the completion block and remove it from the completion block dictionary
             completion();
             [self.tasksCompletionBlocks removeObjectForKey:[NSNumber numberWithUnsignedLong:_key]];
-            
+
         }
-        
+
     }
-    
+
     @synchronized(self.tasks) {
-        
+
         //see if this task has been ended yet
         NSNumber *taskId = [self.tasks objectForKey:[NSNumber numberWithUnsignedLong:_key]];
         if (taskId) {
-            
+
             for (NSOperation *operation in [ATTrackerQueue sharedInstance].queue.operations) {
                 if([operation isKindOfClass:[ATSender class]]){
                     ATSender *sender = (ATSender *) operation;
@@ -130,13 +130,13 @@ typedef void (^CompletionBlock)();
                     }
                 }
             }
-            
+
             //end the task and remove it from the active task dictionary
             [[UIApplication sharedApplication] endBackgroundTask:[taskId unsignedLongValue]];
             [self.tasks removeObjectForKey:[NSNumber numberWithUnsignedLong:_key]];
-            
+
         }
-        
+
     }
 }
 

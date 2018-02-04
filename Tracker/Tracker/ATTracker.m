@@ -316,6 +316,8 @@ static BOOL _handleCrash = NO;
 
 - (instancetype)init:(NSMutableDictionary *)configuration {
     if (self = [super init]) {
+#if defined AT_EXTENSION
+#else
         self.buffer = [[ATBuffer alloc] initWithTracker:self];
         self.configuration = [[ATConfiguration alloc] initWithDictionary: configuration];
         if(![ATLifeCycle isInitialized]){
@@ -327,6 +329,7 @@ static BOOL _handleCrash = NO;
         self.lifeCycle = [[ATLifeCycle alloc] init];
         self.businessObjects = [[NSMutableDictionary alloc] init];
         self.dispatcher = [[ATDispatcher alloc] initWithTracker:self];
+#endif
     }
     return self;
 }
