@@ -183,7 +183,7 @@ static BOOL sentWithSuccess = NO;
         
     } else {
         
-        NSURL *url = [NSURL URLWithString:self.hit.url];
+        NSURL *url = [NSURL URLWithString:[self.hit.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
         if (url) {
             
